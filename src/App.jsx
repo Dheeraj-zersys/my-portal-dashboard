@@ -2,9 +2,9 @@ import Sidebar from "./components/Sidebar";
 
 function App() {
   return (
-    <div style={{ display: "flex" }}>
+    <div className="flex min-h-screen">
       <Sidebar />
-      <main style={{ padding: "24px", flexGrow: 1 }}></main>
+      <main className="flex-1 p-6" />
     </div>
   );
 }

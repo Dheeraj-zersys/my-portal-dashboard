@@ -7,68 +7,62 @@ import { RxDashboard } from "react-icons/rx";
 import { FiUsers, FiFileText } from "react-icons/fi";
 import { MdFormatListBulleted } from "react-icons/md";
 import { TbGlobe } from "react-icons/tb";
-import { GoTriangleDown, GoTriangleUp } from "react-icons/go";
-import "./Sidebar.css";
+import { GoChevronDown, GoChevronUp } from "react-icons/go";
+
+const navItems = [
+  ["Dashboard", RxDashboard],
+  ["Users", FiUsers],
+  ["Business Plan", MdFormatListBulleted],
+  ["Daily Progress Report", FiFileText],
+];
+const subItems = ["GA Manager", "BU Manager"];
+const itemStyle =
+  "flex w-full items-center gap-3 rounded-md px-4 py-3 text-left text-[15px] font-medium text-[#1a1a1a] transition-colors hover:bg-[#ededef] focus-visible:outline-2 focus-visible:outline-orange-500";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
   const { activeItem, isMasterDataOpen } = useSelector(
     (state) => state.navigation,
   );
-
-  const navItems = [
-    { name: "Dashboard", icon: <RxDashboard /> },
-    { name: "Users", icon: <FiUsers /> },
-    { name: "Business Plan", icon: <MdFormatListBulleted /> },
-    { name: "Daily Progress Report", icon: <FiFileText /> },
-  ];
-
-  const subItems = ["GA Manager", "BU Manager"];
+  const selectItem = (item) => dispatch(setActiveItem(item));
 
   return (
-    <aside className="sidebar">
-      <nav className="nav-list">
-        {navItems.map((item) => (
+    <aside className="min-h-screen w-[280px] shrink-0 border-r border-[#e5e5e5] bg-[#f7f7f8] p-4">
+      <nav className="flex flex-col gap-2">
+        {navItems.map(([name, Icon]) => (
           <button
-            key={item.name}
-            className={`nav-item ${activeItem === item.name ? "active" : ""}`}
-            onClick={() => dispatch(setActiveItem(item.name))}
+            key={name}
+            className={`${itemStyle} ${activeItem === name ? "bg-[#ffefe5] text-[#f96200]" : ""}`}
+            onClick={() => selectItem(name)}
           >
-            <span className="nav-icon">{item.icon}</span>
-            <span className="nav-label">{item.name}</span>
+            <Icon className="shrink-0 text-lg" />
+            <span className="flex-1">{name}</span>
           </button>
         ))}
 
-        {/* Master Data Dropdown */}
-        <div className="nav-dropdown">
-          <button
-            className={`nav-item ${activeItem.includes("Manager") ? "active" : ""}`}
-            onClick={() => dispatch(toggleMasterData())}
-          >
-            <span className="nav-icon">
-              <TbGlobe />
-            </span>
-            <span className="nav-label">Master Data</span>
-            <span className="arrow-icon">
-              {isMasterDataOpen ? <GoTriangleUp /> : <GoTriangleDown />}
-            </span>
-          </button>
-
-          {isMasterDataOpen && (
-            <div className="sub-menu">
-              {subItems.map((sub) => (
-                <button
-                  key={sub}
-                  className={`nav-item sub-item ${activeItem === sub ? "active" : ""}`}
-                  onClick={() => dispatch(setActiveItem(sub))}
-                >
-                  <span className="bullet-point">•</span>
-                  <span className="nav-label">{sub}</span>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        <button
+          className={`${itemStyle} ${activeItem.includes("Manager") ? "bg-[#ffefe5] text-[#f96200]" : ""}`}
+          onClick={() => dispatch(toggleMasterData())}
+          aria-expanded={isMasterDataOpen}
+        >
+          <TbGlobe className="shrink-0 text-lg" />
+          <span className="flex-1">Master Data</span>
+          {isMasterDataOpen ? <GoChevronUp /> : <GoChevronDown />}
+        </button>
+        {isMasterDataOpen && (
+          <div className="flex flex-col gap-2 pl-8">
+            {subItems.map((item) => (
+              <button
+                key={item}
+                className={`${itemStyle} ${activeItem === item ? "bg-[#ffefe5] text-[#f96200]" : ""}`}
+                onClick={() => selectItem(item)}
+              >
+                <span aria-hidden="true">•</span>
+                {item}
+              </button>
+            ))}
+          </div>
+        )}
       </nav>
     </aside>
   );
