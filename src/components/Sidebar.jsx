@@ -17,7 +17,7 @@ const navItems = [
 ];
 const subItems = ["GA Manager", "BU Manager"];
 const itemStyle =
-  "flex w-full items-center gap-3 rounded-md px-4 py-3 text-left text-[15px] font-medium text-[#1a1a1a] transition-colors hover:bg-[#ededef] focus-visible:outline-2 focus-visible:outline-orange-500";
+  "flex w-full items-center gap-3 rounded-md px-4 py-3 text-left text-[20px] font-medium text-[#1a1a1a] transition-colors hover:bg-[#ededef] focus-visible:outline-2 focus-visible:outline-orange-500";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -35,7 +35,7 @@ const Sidebar = () => {
             className={`${itemStyle} ${activeItem === name ? "bg-[#ffefe5] text-[#f96200]" : ""}`}
             onClick={() => selectItem(name)}
           >
-            <Icon className="shrink-0 text-lg" />
+            <Icon className="shrink-0 text-2xl" />
             <span className="flex-1">{name}</span>
           </button>
         ))}
@@ -45,7 +45,7 @@ const Sidebar = () => {
           onClick={() => dispatch(toggleMasterData())}
           aria-expanded={isMasterDataOpen}
         >
-          <TbGlobe className="shrink-0 text-lg" />
+          <TbGlobe className="shrink-0 text-2xl" />
           <span className="flex-1">Master Data</span>
           {isMasterDataOpen ? <GoChevronUp /> : <GoChevronDown />}
         </button>
