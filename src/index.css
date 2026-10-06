@@ -1,0 +1,37 @@
+/* Global Reset and Box Sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Base Body Styles */
+html,
+body {
+  height: 100%;
+  width: 100%;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  background-color: #f4f5f7;
+  color: #172b4d;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Root Element Alignment */
+#root {
+  min-height: 100vh;
+  display: flex;
+}
+
+/* Clean Button Resets */
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  outline: none;
+  cursor: pointer;
+}
