@@ -42,7 +42,7 @@ const initialUsers = [
     email: "Amal@gmail.com",
     phone: "0000000000",
     role: "Admin",
-    status: "Inactive",
+    status: "Active",
     unit: "BU 1",
   },
   {
@@ -56,7 +56,7 @@ const initialUsers = [
   },
 ];
 
-const pageSize = 5;
+const pageSize = 8;
 const emptyForm = {
   name: "",
   email: "",
@@ -173,7 +173,7 @@ const UsersContent = () => {
             <table className="w-full min-w-[760px] border-collapse text-left text-sm">
               <thead className="bg-[#e5e5e5] text-xs font-semibold text-gray-800">
                 <tr>
-                  <th className="px-4 py-3">Sl No</th>
+                  <th className="px-4 py-5">Sl No</th>
                   <th className="px-4 py-3">Name</th>
                   <th className="px-4 py-3">Email</th>
                   <th className="px-4 py-3">Phone</th>
