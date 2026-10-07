@@ -21,7 +21,7 @@ const DashboardContent = ({ activeTab = "Dashboard" }) => {
     {
       id: "businessPlan",
       title: "Business Plan",
-      value: `${stats?.businessPlan?.current ?? 5}/${stats?.businessPlan?.total ?? 250}`,
+      value: `${stats?.businessPlan?.current ?? 5}/${stats?.businessPlan?.total ?? 25}`,
       icon: ListChecks,
     },
     {
