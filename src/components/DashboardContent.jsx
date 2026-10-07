@@ -15,25 +15,25 @@ const DashboardContent = ({ activeTab = "Dashboard" }) => {
     {
       id: "users",
       title: "Users",
-      value: stats?.users ?? 15,
+      value: stats?.users ?? 10,
       icon: Users,
     },
     {
       id: "businessPlan",
       title: "Business Plan",
-      value: `${stats?.businessPlan?.current ?? 15}/${stats?.businessPlan?.total ?? 50}`,
+      value: `${stats?.businessPlan?.current ?? 5}/${stats?.businessPlan?.total ?? 250}`,
       icon: ListChecks,
     },
     {
       id: "dpr",
       title: "Daily Progress Report",
-      value: `${stats?.dailyProgressReport?.current ?? 19}/${stats?.dailyProgressReport?.total ?? 50}`,
+      value: `${stats?.dailyProgressReport?.current ?? 10}/${stats?.dailyProgressReport?.total ?? 25}`,
       icon: FileText,
     },
     {
       id: "geoArea",
       title: "Geographical Area",
-      value: stats?.geographicalArea ?? 15,
+      value: stats?.geographicalArea ?? 10,
       icon: Globe,
     },
   ];
