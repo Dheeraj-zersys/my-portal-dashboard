@@ -2,12 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   stats: {
-    users: 15,
-    businessPlan: { current: 15, total: 50 },
-    dailyProgressReport: { current: 19, total: 50 },
-    geographicalArea: 15,
+    users: 10,
+    businessPlan: { current: 5, total: 25 },
+    dailyProgressReport: { current: 10, total: 25 },
+    geographicalArea: 10,
   },
-  status: "idle",
+  //   status: "idle",
 };
 
 const dashboardSlice = createSlice({

@@ -3,32 +3,37 @@ import { useSelector } from "react-redux";
 import { selectDashboardStats } from "../store/dashboardSlice";
 import { Users, ListChecks, FileText, Globe } from "lucide-react";
 
-const DashboardContent = () => {
+const DashboardContent = ({ activeTab = "Dashboard" }) => {
   const stats = useSelector(selectDashboardStats);
+
+  // If activeTab is not 'Dashboard', return blank area
+  if (activeTab !== "Dashboard") {
+    return <div className="flex-1 bg-gray-50 min-h-screen" />;
+  }
 
   const cards = [
     {
       id: "users",
       title: "Users",
-      value: stats.users,
+      value: stats?.users ?? 15,
       icon: Users,
     },
     {
       id: "businessPlan",
       title: "Business Plan",
-      value: `${stats.businessPlan.current}/${stats.businessPlan.total}`,
+      value: `${stats?.businessPlan?.current ?? 15}/${stats?.businessPlan?.total ?? 50}`,
       icon: ListChecks,
     },
     {
       id: "dpr",
       title: "Daily Progress Report",
-      value: `${stats.dailyProgressReport.current}/${stats.dailyProgressReport.total}`,
+      value: `${stats?.dailyProgressReport?.current ?? 19}/${stats?.dailyProgressReport?.total ?? 50}`,
       icon: FileText,
     },
     {
       id: "geoArea",
       title: "Geographical Area",
-      value: stats.geographicalArea,
+      value: stats?.geographicalArea ?? 15,
       icon: Globe,
     },
   ];
