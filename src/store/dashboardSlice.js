@@ -7,7 +7,7 @@ const initialState = {
     dailyProgressReport: { current: 10, total: 25 },
     geographicalArea: 10,
   },
-  //   status: "idle",
+  status: "idle",
 };
 
 const dashboardSlice = createSlice({
