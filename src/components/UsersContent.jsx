@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Search,
   UserRoundPlus,
@@ -56,7 +56,8 @@ const initialUsers = [
   },
 ];
 
-const pageSize = 8;
+const pageSize = 4;
+const usersStorageKey = "tg-portal-users";
 const emptyForm = {
   name: "",
   email: "",
@@ -66,8 +67,23 @@ const emptyForm = {
   unit: "BU 1",
 };
 
+const getSavedUsers = () => {
+  try {
+    const savedUsers = window.localStorage.getItem(usersStorageKey);
+    if (savedUsers === null) return initialUsers;
+
+    const parsedUsers = JSON.parse(savedUsers);
+    if (Array.isArray(parsedUsers)) return parsedUsers;
+
+    console.error("Saved users data is not a valid list.");
+  } catch (error) {
+    console.error("Unable to load saved users from local storage.", error);
+  }
+  return initialUsers;
+};
+
 const UsersContent = () => {
-  const [users, setUsers] = useState(initialUsers);
+  const [users, setUsers] = useState(getSavedUsers);
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const [editingUser, setEditingUser] = useState(null);
@@ -88,6 +104,14 @@ const UsersContent = () => {
     (page - 1) * pageSize,
     page * pageSize,
   );
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(usersStorageKey, JSON.stringify(users));
+    } catch (error) {
+      console.error("Unable to save users to local storage.", error);
+    }
+  }, [users]);
 
   const openNewUser = () => {
     setEditingUser(null);
@@ -127,18 +151,7 @@ const UsersContent = () => {
   const closeDialog = () => setIsDialogOpen(false);
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f8f8f9]">
-      <header className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6">
-        <div className="flex items-center gap-3">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-100 text-sm font-bold text-orange-600">
-            T
-          </span>
-          <span className="font-bold tracking-wide text-emerald-800">
-            THINK GAS
-          </span>
-        </div>
-      </header>
-
+    <div className="flex min-h-0 flex-1 flex-col bg-[#f8f8f9]">
       <section className="flex-1 p-5 sm:p-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -272,10 +285,6 @@ const UsersContent = () => {
           </div>
         </div>
       </section>
-
-      <footer className="border-t border-gray-200 bg-white px-6 py-4 text-center text-xs text-gray-500">
-        v0.1.0 © 2025 TG Portal. All Right Reserved
-      </footer>
 
       {isDialogOpen && (
         <div

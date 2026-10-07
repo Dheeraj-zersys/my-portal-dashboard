@@ -8,7 +8,7 @@ const DashboardContent = ({ activeTab = "Dashboard" }) => {
 
   // If activeTab is not 'Dashboard', return blank area
   if (activeTab !== "Dashboard") {
-    return <div className="flex-1 bg-gray-50 min-h-screen" />;
+    return <div className="flex-1 bg-gray-50" />;
   }
 
   const cards = [
@@ -39,7 +39,7 @@ const DashboardContent = ({ activeTab = "Dashboard" }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col justify-between p-8">
+    <div className="flex flex-1 flex-col bg-gray-100 p-8">
       <div>
         <h1 className="text-2xl font-bold text-gray-800 mb-6">Dashboard</h1>
 
@@ -68,11 +68,6 @@ const DashboardContent = ({ activeTab = "Dashboard" }) => {
           })}
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="mt-12 pt-4 text-center text-xs text-gray-400">
-        v0.1.0 © 2025 TG Portal. All Right Reserved
-      </footer>
     </div>
   );
 };
