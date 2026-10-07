@@ -1,33 +1,47 @@
 import Sidebar from "./components/Sidebar";
 import DashboardContent from "./components/DashboardContent";
 import UsersContent from "./components/UsersContent";
+import BusinessPlanContent from "./components/BusinessPlanContent";
 import { useSelector } from "react-redux";
+import { Bell, Menu } from "lucide-react";
 
 function App() {
   const activeItem = useSelector((state) => state.navigation.activeItem);
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <Sidebar />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-16 shrink-0 items-center border-b border-gray-200 bg-white px-6">
+    <div className="flex min-h-screen flex-col bg-gray-100">
+      <header className="z-10 flex h-14 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 sm:px-6">
+        <div className="flex items-center gap-3">
+          <span className="p-1.5 text-gray-600" aria-hidden="true">
+            <Menu size={19} />
+          </span>
           <img
             src="/think-gas-logo.png"
             alt="Think Gas"
-            className="h-6 w-auto"
+            className="h-7 w-auto"
           />
-        </header>
-        <main className="flex min-h-0 flex-1 flex-col">
+        </div>
+        <div className="flex items-center gap-4">
+          <span className="p-2 text-gray-500" aria-hidden="true">
+            <Bell size={17} />
+          </span>
+        </div>
+      </header>
+      <div className="flex min-h-0 flex-1">
+        <Sidebar />
+        <main className="flex min-w-0 flex-1 flex-col">
           {activeItem === "Users" ? (
             <UsersContent />
+          ) : activeItem === "Business Plan" ? (
+            <BusinessPlanContent />
           ) : (
             <DashboardContent activeTab={activeItem} />
           )}
         </main>
-        <footer className="shrink-0 border-t border-gray-200 bg-white px-6 py-4 text-center text-xs text-gray-500">
-          v0.1.0 © 2025 TG Portal. All Right Reserved
-        </footer>
       </div>
+      <footer className="shrink-0 border-t border-gray-200 bg-white px-6 py-3 text-center text-xs text-gray-500">
+        v0.1.0 © 2025 TG Portal. All Right Reserved
+      </footer>
     </div>
   );
 }
