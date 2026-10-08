@@ -54,12 +54,13 @@ const Sidebar = () => {
           {isMasterDataOpen ? <GoChevronUp /> : <GoChevronDown />}
         </button>
         {isMasterDataOpen && (
-          <div className="flex flex-col gap-2 pl-8">
+          <div className="flex flex-col gap-1 pl-6">
             {subItems.map((item) => (
               <button
                 key={item}
-                className={`${itemStyle} ${activeItem === item ? "bg-[#ffefe5] text-[#f96200]" : ""}`}
+                className={`flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-xs font-medium transition-colors hover:bg-[#ededef] focus-visible:outline-2 focus-visible:outline-orange-500 ${activeItem === item ? "text-[#f96200]" : "text-[#1a1a1a]"}`}
                 onClick={() => selectItem(item)}
+                aria-current={activeItem === item ? "page" : undefined}
               >
                 <span aria-hidden="true">•</span>
                 {item}

@@ -2,6 +2,9 @@ import Sidebar from "./components/Sidebar";
 import DashboardContent from "./components/DashboardContent";
 import UsersContent from "./components/UsersContent";
 import BusinessPlanContent from "./components/BusinessPlanContent";
+import GAManagerContent from "./components/MasterData/GAManagerContent";
+import BUManagerContent from "./components/MasterData/BUManagerContent";
+// import DailyProgressReport from "./components/DailyProgressReport";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Bell, Menu } from "lucide-react";
@@ -43,13 +46,17 @@ function App() {
             <UsersContent />
           ) : activeItem === "Business Plan" ? (
             <BusinessPlanContent />
+          ) : activeItem === "GA Manager" ? (
+            <GAManagerContent />
+          ) : activeItem === "BU Manager" ? (
+            <BUManagerContent />
           ) : (
             <DashboardContent activeTab={activeItem} />
           )}
         </main>
       </div>
       <footer className="shrink-0 border-t border-gray-200 bg-white px-6 py-3 text-center text-xs text-gray-500">
-        v0.1.0 © 2025 TG Portal. All Right Reserved
+        v0.1.0 2025 TG Portal. All Rights Reserved
       </footer>
     </div>
   );
