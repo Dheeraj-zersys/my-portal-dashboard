@@ -1,5 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, Pencil, Plus, Search, X } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Pencil,
+  Plus,
+  Search,
+  X,
+} from "lucide-react";
 
 const pageSize = 5;
 const states = {
@@ -13,9 +20,10 @@ const states = {
     "NTR",
     "Tirupati",
     "West Godavari",
+    "Bengaluru",
   ],
   Telangana: ["Hyderabad", "Karimnagar", "Khammam", "Rangareddy", "Warangal"],
-  Karnataka: ["Bengaluru", "Belagavi", "Mysuru"],
+  Karnataka: ["Bengaluru", "Belagavi", "Mysuru", "Kolar"],
 };
 const emptyGA = {
   name: "",
@@ -33,7 +41,8 @@ const MasterDataContent = ({
   const isGA = managerType === "ga";
   const title = isGA ? "GA Manager" : "BU Manager";
   const entity = isGA ? "GA" : "BU";
-  const storageKey = `tg-portal-${managerType}-managers`;
+  const seedSignature = JSON.stringify(initialManagers);
+  const storageKey = `tg-portal-${managerType}-managers-${seedSignature}`;
   const emptyForm = isGA ? emptyGA : emptyBU;
   const [managers, setManagers] = useState(() => {
     try {
@@ -43,7 +52,10 @@ const MasterDataContent = ({
       if (Array.isArray(parsedManagers)) return parsedManagers;
       console.error(`Saved ${entity} manager data is not a valid list.`);
     } catch (error) {
-      console.error(`Unable to load ${entity} managers from local storage.`, error);
+      console.error(
+        `Unable to load ${entity} managers from local storage.`,
+        error,
+      );
     }
     return initialManagers;
   });
@@ -75,7 +87,10 @@ const MasterDataContent = ({
     try {
       window.localStorage.setItem(storageKey, JSON.stringify(managers));
     } catch (error) {
-      console.error(`Unable to save ${entity} managers to local storage.`, error);
+      console.error(
+        `Unable to save ${entity} managers to local storage.`,
+        error,
+      );
     }
   }, [entity, managers, storageKey]);
 
@@ -243,8 +258,9 @@ const MasterDataContent = ({
             </table>
             <div className="flex flex-col gap-3 px-5 py-4 text-xs text-gray-400 sm:flex-row sm:items-center sm:justify-between">
               <span>
-                Showing {filteredManagers.length ? (page - 1) * pageSize + 1 : 0}{" "}
-                to {Math.min(page * pageSize, filteredManagers.length)} of{" "}
+                Showing{" "}
+                {filteredManagers.length ? (page - 1) * pageSize + 1 : 0} to{" "}
+                {Math.min(page * pageSize, filteredManagers.length)} of{" "}
                 {filteredManagers.length} entries
               </span>
               <div className="flex items-center gap-1" aria-label="Pagination">

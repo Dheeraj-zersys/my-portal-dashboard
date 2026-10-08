@@ -3,48 +3,52 @@ import MasterDataContent from "./MasterDataContent";
 const initialManagers = [
   {
     id: 1,
-    name: "Anantapur",
-    state: "Andhra Pradesh",
-    districts: ["Anantapur", "Kurnool"],
+    name: "RMD",
+    state: "Karnataka",
+    districts: ["Banglore"],
     status: "Active",
-    createdDate: "12/06/2025",
+    createdDate: "10/10/2026",
   },
   {
     id: 2,
-    name: "Kakinada",
-    state: "Andhra Pradesh",
-    districts: ["East Godavari", "West Godavari"],
+    name: "KP",
+    state: "Tamil nadu",
+    districts: ["Kanchipuram"],
     status: "Active",
-    createdDate: "12/06/2025",
+    createdDate: "12/10/2026",
   },
   {
     id: 3,
-    name: "Vijayawada",
+    name: "LD",
     state: "Andhra Pradesh",
-    districts: ["NTR", "Guntur"],
+    districts: ["Kurnool"],
     status: "Active",
-    createdDate: "13/06/2025",
+    createdDate: "11/10/2026",
   },
   {
     id: 4,
-    name: "Tirupati",
+    name: "CHK",
     state: "Andhra Pradesh",
-    districts: ["Tirupati", "Chittoor"],
+    districts: ["Tirupati"],
     status: "Active",
-    createdDate: "13/06/2025",
+    createdDate: "9/10/2026",
   },
   {
     id: 5,
-    name: "Hyderabad",
-    state: "Telangana",
-    districts: ["Hyderabad", "Rangareddy"],
+    name: "AGP",
+    state: "Karnataka",
+    districts: ["Kolar"],
     status: "Active",
-    createdDate: "14/06/2025",
+    createdDate: "14/10/2026",
   },
 ];
 
 const GAManagerContent = () => (
-  <MasterDataContent managerType="ga" initialManagers={initialManagers} />
+  <MasterDataContent
+    key={JSON.stringify(initialManagers)}
+    managerType="ga"
+    initialManagers={initialManagers}
+  />
 );
 
 export default GAManagerContent;
