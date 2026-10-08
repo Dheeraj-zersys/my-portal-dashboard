@@ -1,66 +1,61 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Pencil,
-  Search,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Pencil, Search } from "lucide-react";
 
 const initialPlans = [
   {
     id: 1,
-    entityName: "AOF",
-    gaName: "Anantapur",
+    entityName: "AGP",
+    gaName: "CHK",
     district: "Anantapur",
     date: "2025-01-10",
     transport: "500",
     industrialMarket: "800",
     commercial: "300",
-    consumer: "600",
+    domestic: "600",
   },
   {
     id: 2,
-    entityName: "AOF",
-    gaName: "Kurnool",
+    entityName: "AGP",
+    gaName: "GA",
     district: "Kurnool",
     date: "2025-01-12",
     transport: "450",
     industrialMarket: "750",
     commercial: "250",
-    consumer: "550",
+    domestic: "550",
   },
   {
     id: 3,
-    entityName: "AOF",
-    gaName: "Kadapa",
+    entityName: "AGP",
+    gaName: "LD",
     district: "YSR Kadapa",
     date: "2025-01-15",
     transport: "600",
     industrialMarket: "900",
     commercial: "350",
-    consumer: "700",
+    domestic: "700",
   },
   {
     id: 4,
-    entityName: "AOF",
-    gaName: "Vijayawada",
+    entityName: "AGP",
+    gaName: "LD",
     district: "NTR",
     date: "2025-01-18",
     transport: "700",
     industrialMarket: "1000",
     commercial: "400",
-    consumer: "850",
+    domestic: "850",
   },
   {
     id: 5,
-    entityName: "AOF",
-    gaName: "Tirupati",
+    entityName: "AGP",
+    gaName: "LD",
     district: "Tirupati",
     date: "2025-01-20",
     transport: "550",
     industrialMarket: "850",
     commercial: "320",
-    consumer: "650",
+    domestic: "650",
   },
 ];
 
@@ -74,11 +69,17 @@ const emptyForm = {
   transport: "",
   industrialMarket: "",
   commercial: "",
-  consumer: "",
+  domestic: "",
 };
 const inputClass =
-  "w-full rounded border border-gray-200 bg-[#f8f9fc] px-3 py-2 text-sm text-gray-800 outline-none focus:border-emerald-700";
+  "w-full rounded border border-gray-200 bg-[#f8f9fc] px-2 py-1.5 text-xs text-gray-800 outline-none focus:border-emerald-700";
 const labelClass = "space-y-1 text-xs font-medium text-gray-700";
+
+const formatDate = (date) => {
+  if (!date) return "";
+  const [year, month, day] = date.split("-");
+  return `${day}/${month}/${year}`;
+};
 
 const getSavedPlans = () => {
   try {
@@ -106,7 +107,9 @@ const BusinessPlanContent = () => {
     if (!search) return plans;
     return plans.filter((plan) =>
       Object.values(plan).some((value) =>
-        String(value ?? "").toLowerCase().includes(search),
+        String(value ?? "")
+          .toLowerCase()
+          .includes(search),
       ),
     );
   }, [plans, query]);
@@ -177,44 +180,51 @@ const BusinessPlanContent = () => {
               </div>
               <form
                 onSubmit={savePlan}
-                className="rounded-lg bg-white p-5 shadow-sm sm:p-7"
+                className="rounded-lg bg-white p-4 shadow-sm sm:p-5"
               >
-                <div className="mb-5 grid gap-x-6 gap-y-4 sm:grid-cols-3">
-                  <label className={labelClass}>
-                    <span>Entity Name <b className="text-red-500">*</b></span>
+                <div className="grid gap-3 border-b border-gray-100 pb-3 sm:grid-cols-3">
+                  <label className="flex min-w-0 items-center gap-1 text-xs font-semibold text-gray-800">
+                    <span className="shrink-0">Entity Name:</span>
                     <input
                       required
                       value={form.entityName}
                       onChange={(event) =>
                         setForm({ ...form, entityName: event.target.value })
                       }
-                      className={inputClass}
+                      aria-label="Entity Name"
+                      className="min-w-0 flex-1 bg-transparent text-xs font-semibold outline-none focus-visible:ring-1 focus-visible:ring-emerald-700"
                     />
                   </label>
-                  <label className={labelClass}>
-                    <span>GA Name <b className="text-red-500">*</b></span>
+                  <label className="flex min-w-0 items-center gap-1 text-xs font-semibold text-gray-800">
+                    <span className="shrink-0">GA Name:</span>
                     <input
                       required
                       value={form.gaName}
                       onChange={(event) =>
                         setForm({ ...form, gaName: event.target.value })
                       }
-                      className={inputClass}
+                      aria-label="GA Name"
+                      className="min-w-0 flex-1 bg-transparent text-xs font-semibold outline-none focus-visible:ring-1 focus-visible:ring-emerald-700"
                     />
                   </label>
-                  <label className={labelClass}>
-                    <span>District <b className="text-red-500">*</b></span>
+                  <label className="flex min-w-0 items-center gap-1 text-xs font-semibold text-gray-800">
+                    <span className="shrink-0">District:</span>
                     <input
                       required
                       value={form.district}
                       onChange={(event) =>
                         setForm({ ...form, district: event.target.value })
                       }
-                      className={inputClass}
+                      aria-label="District"
+                      className="min-w-0 flex-1 bg-transparent text-xs font-semibold outline-none focus-visible:ring-1 focus-visible:ring-emerald-700"
                     />
                   </label>
+                </div>
+                <div className="mt-3 max-w-sm">
                   <label className={labelClass}>
-                    <span>Date <b className="text-red-500">*</b></span>
+                    <span>
+                      Date<span className="text-red-500">*</span>
+                    </span>
                     <input
                       required
                       type="date"
@@ -226,19 +236,21 @@ const BusinessPlanContent = () => {
                     />
                   </label>
                 </div>
-                <p className="mb-3 text-xs font-semibold text-gray-700">
-                  Segment
+                <p className="mb-2 mt-3 text-xs font-semibold text-gray-700">
+                  Segment<span className="text-red-500">*</span>
                 </p>
-                <div className="grid gap-x-6 gap-y-4 sm:grid-cols-4">
+                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
                   {[
                     ["transport", "Transport"],
                     ["industrialMarket", "Industrial Mkt"],
                     ["commercial", "Commercial"],
-                    ["consumer", "Consumer"],
+                    ["domestic", "Domestic"],
                   ].map(([field, label]) => (
-                    <label key={field} className={labelClass}>
-                      <span>{label}</span>
+                    <label key={field}>
                       <input
+                        required
+                        aria-label={label}
+                        placeholder={label}
                         type="number"
                         min="0"
                         value={form[field]}
@@ -253,7 +265,7 @@ const BusinessPlanContent = () => {
                 <div className="mt-6 flex justify-center">
                   <button
                     type="submit"
-                    className="rounded bg-emerald-700 px-5 py-2 text-sm font-medium text-white hover:bg-emerald-800"
+                    className="rounded bg-emerald-700 px-4 py-1.5 text-xs font-medium text-white hover:bg-emerald-800"
                   >
                     {editingPlan ? "Update Business Plan" : "Add Business Plan"}
                   </button>
@@ -299,10 +311,11 @@ const BusinessPlanContent = () => {
                       <th className="px-3 py-3">Entity Name</th>
                       <th className="px-3 py-3">GA Name</th>
                       <th className="px-3 py-3">District</th>
+                      <th className="px-3 py-3">Date</th>
                       <th className="px-3 py-3">Transport</th>
                       <th className="px-3 py-3">Industrial Mkt</th>
                       <th className="px-3 py-3">Commercial</th>
-                      <th className="px-3 py-3">Consumer</th>
+                      <th className="px-3 py-3">Domestic</th>
                       <th className="px-3 py-3 text-center">Action</th>
                     </tr>
                   </thead>
@@ -315,10 +328,11 @@ const BusinessPlanContent = () => {
                         <td className="px-3 py-3">{plan.entityName}</td>
                         <td className="px-3 py-3">{plan.gaName}</td>
                         <td className="px-3 py-3">{plan.district}</td>
+                        <td className="px-3 py-3">{formatDate(plan.date)}</td>
                         <td className="px-3 py-3">{plan.transport}</td>
                         <td className="px-3 py-3">{plan.industrialMarket}</td>
                         <td className="px-3 py-3">{plan.commercial}</td>
-                        <td className="px-3 py-3">{plan.consumer}</td>
+                        <td className="px-3 py-3">{plan.domestic}</td>
                         <td className="px-3 py-3 text-center">
                           <button
                             type="button"
@@ -334,7 +348,7 @@ const BusinessPlanContent = () => {
                     {visiblePlans.length === 0 && (
                       <tr>
                         <td
-                          colSpan="9"
+                          colSpan="10"
                           className="px-4 py-10 text-center text-gray-500"
                         >
                           No business plans found.
@@ -345,34 +359,41 @@ const BusinessPlanContent = () => {
                 </table>
                 <div className="flex flex-col gap-3 px-5 py-4 text-xs text-gray-400 sm:flex-row sm:items-center sm:justify-between">
                   <span>
-                    Showing {filteredPlans.length ? (page - 1) * pageSize + 1 : 0}{" "}
-                    to {Math.min(page * pageSize, filteredPlans.length)} of{" "}
+                    Showing{" "}
+                    {filteredPlans.length ? (page - 1) * pageSize + 1 : 0} to{" "}
+                    {Math.min(page * pageSize, filteredPlans.length)} of{" "}
                     {filteredPlans.length} entries
                   </span>
-                  <div className="flex items-center gap-1" aria-label="Pagination">
+                  <div
+                    className="flex items-center gap-1"
+                    aria-label="Pagination"
+                  >
                     <button
                       type="button"
-                      onClick={() => setPage((current) => Math.max(1, current - 1))}
+                      onClick={() =>
+                        setPage((current) => Math.max(1, current - 1))
+                      }
                       disabled={page === 1}
                       aria-label="Previous page"
                       className="rounded px-2 py-1 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       <ChevronLeft size={15} />
                     </button>
-                    {Array.from({ length: pageCount }, (_, index) => index + 1).map(
-                      (number) => (
-                        <button
-                          key={number}
-                          type="button"
-                          onClick={() => setPage(number)}
-                          aria-label={`Page ${number}`}
-                          aria-current={page === number ? "page" : undefined}
-                          className={`rounded px-2 py-1 ${page === number ? "bg-emerald-700 text-white" : "hover:bg-gray-100"}`}
-                        >
-                          {number}
-                        </button>
-                      ),
-                    )}
+                    {Array.from(
+                      { length: pageCount },
+                      (_, index) => index + 1,
+                    ).map((number) => (
+                      <button
+                        key={number}
+                        type="button"
+                        onClick={() => setPage(number)}
+                        aria-label={`Page ${number}`}
+                        aria-current={page === number ? "page" : undefined}
+                        className={`rounded px-2 py-1 ${page === number ? "bg-emerald-700 text-white" : "hover:bg-gray-100"}`}
+                      >
+                        {number}
+                      </button>
+                    ))}
                     <button
                       type="button"
                       onClick={() =>

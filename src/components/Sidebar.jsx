@@ -28,7 +28,10 @@ const Sidebar = () => {
   const selectItem = (item) => dispatch(setActiveItem(item));
 
   return (
-    <aside className="w-56 shrink-0 border-r border-[#e5e5e5] bg-white p-3">
+    <aside
+      id="app-sidebar"
+      className="w-56 shrink-0 border-r border-[#e5e5e5] bg-white p-3"
+    >
       <nav className="flex flex-col gap-2">
         {navItems.map(([name, Icon]) => (
           <button

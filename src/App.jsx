@@ -2,19 +2,28 @@ import Sidebar from "./components/Sidebar";
 import DashboardContent from "./components/DashboardContent";
 import UsersContent from "./components/UsersContent";
 import BusinessPlanContent from "./components/BusinessPlanContent";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Bell, Menu } from "lucide-react";
 
 function App() {
   const activeItem = useSelector((state) => state.navigation.activeItem);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-100">
       <header className="z-10 flex h-14 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 sm:px-6">
         <div className="flex items-center gap-3">
-          <span className="p-1.5 text-gray-600" aria-hidden="true">
+          <button
+            type="button"
+            className="rounded p-1.5 text-gray-600 hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-orange-500"
+            onClick={() => setIsSidebarOpen((isOpen) => !isOpen)}
+            aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
+            aria-expanded={isSidebarOpen}
+            aria-controls="app-sidebar"
+          >
             <Menu size={19} />
-          </span>
+          </button>
           <img
             src="/think-gas-logo.png"
             alt="Think Gas"
@@ -28,7 +37,7 @@ function App() {
         </div>
       </header>
       <div className="flex min-h-0 flex-1">
-        <Sidebar />
+        {isSidebarOpen && <Sidebar />}
         <main className="flex min-w-0 flex-1 flex-col">
           {activeItem === "Users" ? (
             <UsersContent />
