@@ -7,7 +7,7 @@ const initialPlans = [
     entityName: "AGP",
     gaName: "CHK",
     district: "Anantapur",
-    date: "2025-01-10",
+    date: "2026-01-10",
     transport: "500",
     industrialMarket: "800",
     commercial: "300",
@@ -18,7 +18,7 @@ const initialPlans = [
     entityName: "AGP",
     gaName: "GA",
     district: "Kurnool",
-    date: "2025-01-12",
+    date: "2026-01-12",
     transport: "450",
     industrialMarket: "750",
     commercial: "250",
@@ -29,7 +29,7 @@ const initialPlans = [
     entityName: "AGP",
     gaName: "LD",
     district: "YSR Kadapa",
-    date: "2025-01-15",
+    date: "2026-01-15",
     transport: "600",
     industrialMarket: "900",
     commercial: "350",
@@ -40,7 +40,7 @@ const initialPlans = [
     entityName: "AGP",
     gaName: "LD",
     district: "NTR",
-    date: "2025-01-18",
+    date: "2026-01-18",
     transport: "700",
     industrialMarket: "1000",
     commercial: "400",
@@ -51,7 +51,7 @@ const initialPlans = [
     entityName: "AGP",
     gaName: "LD",
     district: "Tirupati",
-    date: "2025-01-20",
+    date: "2026-01-20",
     transport: "550",
     industrialMarket: "850",
     commercial: "320",
@@ -60,7 +60,8 @@ const initialPlans = [
 ];
 
 const pageSize = 5;
-const storageKey = "tg-portal-business-plans";
+const seedSignature = JSON.stringify(initialPlans);
+const storageKey = `tg-portal-business-plans-${seedSignature}`;
 const emptyForm = {
   entityName: "",
   gaName: "",
@@ -94,7 +95,7 @@ const getSavedPlans = () => {
   return initialPlans;
 };
 
-const BusinessPlanContent = () => {
+const BusinessPlanContentView = () => {
   const [plans, setPlans] = useState(getSavedPlans);
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
@@ -173,7 +174,7 @@ const BusinessPlanContent = () => {
                 <button
                   type="button"
                   onClick={closeForm}
-                  className="rounded border border-gray-300 px-3 py-1.5 text-xs text-gray-700 hover:bg-white"
+                  className="rounded border border-gray-600 px-5 py-3 text-xs text-gray-700 hover:bg-white"
                 >
                   Back
                 </button>
@@ -415,5 +416,9 @@ const BusinessPlanContent = () => {
     </div>
   );
 };
+
+const BusinessPlanContent = () => (
+  <BusinessPlanContentView key={seedSignature} />
+);
 
 export default BusinessPlanContent;
