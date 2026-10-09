@@ -61,7 +61,8 @@ const initialPlans = [
 
 const pageSize = 5;
 const seedSignature = JSON.stringify(initialPlans);
-const storageKey = `tg-portal-business-plans-${seedSignature}`;
+const storageKey = "tg-portal-business-plans";
+const legacyStorageKey = `${storageKey}-${seedSignature}`;
 const emptyForm = {
   entityName: "",
   gaName: "",
@@ -84,7 +85,9 @@ const formatDate = (date) => {
 
 const getSavedPlans = () => {
   try {
-    const savedPlans = window.localStorage.getItem(storageKey);
+    const savedPlans =
+      window.localStorage.getItem(storageKey) ??
+      window.localStorage.getItem(legacyStorageKey);
     if (savedPlans === null) return initialPlans;
     const parsedPlans = JSON.parse(savedPlans);
     if (Array.isArray(parsedPlans)) return parsedPlans;

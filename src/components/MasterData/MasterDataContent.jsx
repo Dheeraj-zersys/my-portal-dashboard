@@ -20,10 +20,10 @@ const states = {
     "NTR",
     "Tirupati",
     "West Godavari",
-    "Bengaluru",
   ],
   Telangana: ["Hyderabad", "Karimnagar", "Khammam", "Rangareddy", "Warangal"],
   Karnataka: ["Bengaluru", "Belagavi", "Mysuru", "Kolar"],
+  TamilNadu: ["Chennai", "Madurai", "Vellore", "Ambur", "Kanchipuram"],
 };
 const emptyGA = {
   name: "",
@@ -42,11 +42,14 @@ const MasterDataContent = ({
   const title = isGA ? "GA Manager" : "BU Manager";
   const entity = isGA ? "GA" : "BU";
   const seedSignature = JSON.stringify(initialManagers);
-  const storageKey = `tg-portal-${managerType}-managers-${seedSignature}`;
+  const storageKey = `tg-portal-${managerType}-managers`;
+  const legacyStorageKey = `${storageKey}-${seedSignature}`;
   const emptyForm = isGA ? emptyGA : emptyBU;
   const [managers, setManagers] = useState(() => {
     try {
-      const savedManagers = window.localStorage.getItem(storageKey);
+      const savedManagers =
+        window.localStorage.getItem(storageKey) ??
+        window.localStorage.getItem(legacyStorageKey);
       if (savedManagers === null) return initialManagers;
       const parsedManagers = JSON.parse(savedManagers);
       if (Array.isArray(parsedManagers)) return parsedManagers;
