@@ -27,7 +27,7 @@ function App() {
           >
             <Menu size={19} />
           </button>
-          <img src="/think-gas-logo.png" className="h-7 w-auto" />
+          <img src="/think-gas-logo.png" className="h-9 w-auto" />
         </div>
         <div className="flex items-center gap-4">
           <span className="p-2 text-gray-500" aria-hidden="true">
