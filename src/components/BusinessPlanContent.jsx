@@ -419,7 +419,6 @@ const BusinessPlanContentView = () => {
     </div>
   );
 };
-
 const BusinessPlanContent = () => (
   <BusinessPlanContentView key={seedSignature} />
 );
