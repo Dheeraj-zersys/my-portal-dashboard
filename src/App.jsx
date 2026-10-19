@@ -4,7 +4,7 @@ import UsersContent from "./components/UsersContent";
 import BusinessPlanContent from "./components/BusinessPlanContent";
 import GAManagerContent from "./components/MasterData/GAManagerContent";
 import BUManagerContent from "./components/MasterData/BUManagerContent";
-import DailyProgressReport from "./components/DailyProgressReport";
+import DailyProgressReport from "./components/DailyProgress";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Bell, Menu } from "lucide-react";
