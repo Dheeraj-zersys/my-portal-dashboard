@@ -46,7 +46,7 @@ function App() {
             <GAManagerContent />
           ) : activeItem === "BU Manager" ? (
             <BUManagerContent />
-          ) : activeItem === "Daily Progress" ? (
+          ) : activeItem === "Daily Progress Report" ? (
             <DailyProgressReport />
           ) : (
             <DashboardContent activeTab={activeItem} />
