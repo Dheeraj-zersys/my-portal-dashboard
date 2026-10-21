@@ -17,6 +17,7 @@ export default function DprModule() {
   );
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [pageSize, setPageSize] = useState(5);
 
   const filteredReports = reports.filter((rep) => {
     const term = searchTerm.toLowerCase();
@@ -27,12 +28,13 @@ export default function DprModule() {
       (rep.industrialCom && rep.industrialCom.toLowerCase().includes(term))
     );
   });
+  const displayedReports = filteredReports.slice(0, pageSize);
 
   return (
     <div className="min-h-0 bg-gray-50 p-6">
       {view === "list" && (
         <div>
-          <div className="flex justify-between items-center m-1 mb-6">
+          <div className="flex justify-between items-center mr-8 mb-6">
             <h1 className="text-3xl font-semibold text-gray-800">
               Daily Progress Report
             </h1>
@@ -99,7 +101,7 @@ export default function DprModule() {
               </table>
             </div>
 
-            <div className="flex justify-between items-center text-sm text-gray-500 p-4 border-t border-gray-200 bg-white">
+            <div className="flex justify-between items-center text-sm text-gray-500 p-4 border-t border-gray-100 bg-white">
               <div>
                 Showing {filteredReports.length > 0 ? 1 : 0} to{" "}
                 {filteredReports.length} of {reports.length} entries
@@ -127,14 +129,14 @@ export default function DprModule() {
       )}
 
       {view === "wizard" && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 max-w-4xl mx-auto">
-          <div className="flex justify-between items-center mb-4 border-b pb-3">
-            <h2 className="text-lg font-bold text-gray-800">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 max-w-4xl mx-auto">
+          <div className="flex justify-between items-center mb-4 pb-3">
+            <h2 className="text-2xl font-bold text-gray-800">
               {editMode ? "Edit DPR" : "Add DPR"}
             </h2>
             <button
               onClick={() => dispatch(setView("list"))}
-              className="text-gray-800 hover:text-gray-500 text-sm"
+              className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded text-sm font-medium"
             >
               Back
             </button>
@@ -161,7 +163,7 @@ export default function DprModule() {
           {currentStep === 1 && (
             <div className="space-y-4">
               <div>
-                <label className="block text-lg font-semibold text-gray-800 mb-1">
+                <label className="block text-sm font-semibold text-gray-800 mb-1">
                   Date
                 </label>
                 <input
@@ -175,12 +177,12 @@ export default function DprModule() {
                   className="w-full md:w-1/3 border rounded p-2 text-sm"
                 />
               </div>
-              <h3 className="font-semibold text-lg text-gray-800 pt-2">
+              <h3 className="font-semibold text-md text-gray-800 pt-2">
                 Domestic Connections
               </h3>
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="text-xs text-gray-500">Registration*</label>
+                  <label className="text-xs text-gray-600">Registration*</label>
                   <input
                     type="text"
                     value={formData.domesticReg}
@@ -230,7 +232,7 @@ export default function DprModule() {
                   />
                 </div>
               </div>
-              <h3 className="font-semibold text-lg text-gray-800 pt-2">
+              <h3 className="font-semibold text-md text-gray-800 pt-2">
                 Commercial
               </h3>
               <div className="grid grid-cols-3 gap-4">
@@ -267,7 +269,7 @@ export default function DprModule() {
                   />
                 </div>
               </div>
-              <h3 className="font-semibold text-lg text-gray-800 pt-2">
+              <h3 className="font-semibold text-md text-gray-800 pt-2">
                 Industrial
               </h3>
               <div className="grid grid-cols-3 gap-4">
@@ -767,7 +769,7 @@ export default function DprModule() {
           )}
 
           {/* Wizard Action Controls */}
-          <div className="flex justify-between items-center mt-8 pt-4 border-t">
+          <div className="flex justify-between items-center mt-8 pt-4">
             {currentStep > 1 ? (
               <button
                 onClick={() => dispatch(setCurrentStep(currentStep - 1))}
@@ -788,18 +790,474 @@ export default function DprModule() {
               </button>
             ) : (
               <button
-                onClick={() => {
-                  dispatch(saveDpr());
-                }}
+                onClick={() => dispatch(setView("previewPart1"))}
                 className="bg-emerald-700 hover:bg-emerald-800 text-white px-5 py-2 rounded text-sm font-medium"
               >
-                Preview / Save
+                Preview Sales
               </button>
             )}
           </div>
         </div>
       )}
 
+      {/* PREVIEW PART 1 */}
+      {view === "previewPart1" && (
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 max-w-6xl mx-auto">
+          <div className="flex justify-between items-center mb-4 border-b pb-3">
+            <h2 className="text-lg font-bold text-gray-800">Preview</h2>
+            <button
+              onClick={() => dispatch(setView("wizard"))}
+              className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded text-sm font-medium"
+            >
+              Back
+            </button>
+          </div>
+          <div className="text-center font-semibold text-xs text-gray-700 mb-4">
+            Date: {formData.date}
+          </div>
+          <div className="overflow-x-auto border border-gray-200 rounded">
+            <table className="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr className="bg-gray-100 border-b">
+                  <th className="p-2 border-r w-12 text-center">Sl No</th>
+                  <th className="p-2 border-r w-36">Infrastructure</th>
+                  <th className="p-2 border-r">For the Day</th>
+                  <th className="p-2 border-r">Cumulative for the Month</th>
+                  <th className="p-2 border-r">Cumulative CY 2025</th>
+                  <th className="p-2 border-r">Cumulative CY 2024</th>
+                  <th className="p-2 border-r">Cumulative till Dec 2023</th>
+                  <th className="p-2">Cumulative till Dec 2023</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b">
+                  <td
+                    className="p-2 border-r text-center font-medium"
+                    rowSpan="3"
+                  >
+                    1
+                  </td>
+                  <td className="p-2 border-r font-medium" rowSpan="3">
+                    Domestic Connections
+                  </td>
+                  <td className="p-2 border-r">Registration</td>
+                  <td className="p-2 border-r">{formData.domesticReg}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 border-r">Last Mile Connectivity</td>
+                  <td className="p-2 border-r">{formData.domesticLmc}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 border-r">Commissioned</td>
+                  <td className="p-2 border-r">{formData.domesticCom}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td
+                    className="p-2 border-r text-center font-medium"
+                    rowSpan="2"
+                  >
+                    2
+                  </td>
+                  <td className="p-2 border-r font-medium" rowSpan="2">
+                    Commercial
+                  </td>
+                  <td className="p-2 border-r">Registration</td>
+                  <td className="p-2 border-r">{formData.commercialReg}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 border-r">Last Mile Connectivity</td>
+                  <td className="p-2 border-r">
+                    {formData.commercialLmc || "-"}
+                  </td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td
+                    className="p-2 border-r text-center font-medium"
+                    rowSpan="2"
+                  >
+                    3
+                  </td>
+                  <td className="p-2 border-r font-medium" rowSpan="2">
+                    Industrial
+                  </td>
+                  <td className="p-2 border-r">Registration</td>
+                  <td className="p-2 border-r">{formData.industrialReg}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 border-r">Last Mile Connectivity</td>
+                  <td className="p-2 border-r">
+                    {formData.industrialLmc || "-"}
+                  </td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td
+                    className="p-2 border-r text-center font-medium"
+                    rowSpan="4"
+                  >
+                    4
+                  </td>
+                  <td className="p-2 border-r font-medium" rowSpan="4">
+                    No. of CNG Stations
+                  </td>
+                  <td className="p-2 border-r">OMC Final PESO Applied</td>
+                  <td className="p-2 border-r">{formData.omcApplied}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 border-r">Commissioned</td>
+                  <td className="p-2 border-r">{formData.omcCom}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 border-r">COCO/CODO Final PESO Applied</td>
+                  <td className="p-2 border-r">{formData.cocoApplied}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 border-r">Commissioned</td>
+                  <td className="p-2 border-r">{formData.cocoCom}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td
+                    className="p-2 border-r text-center font-medium"
+                    rowSpan="3"
+                  >
+                    5
+                  </td>
+                  <td className="p-2 border-r font-medium" rowSpan="3">
+                    CNG Vehicles
+                  </td>
+                  <td className="p-2 border-r">OEM</td>
+                  <td className="p-2 border-r">{formData.oem}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 border-r">Conversion</td>
+                  <td className="p-2 border-r">{formData.conversion}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 border-r font-semibold">Total</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td
+                    className="p-2 border-r text-center font-medium"
+                    rowSpan="4"
+                  >
+                    6
+                  </td>
+                  <td className="p-2 border-r font-medium" rowSpan="4">
+                    MDPE Pipeline (kms.)
+                  </td>
+                  <td className="p-2 border-r">Laid</td>
+                  <td className="p-2 border-r">{formData.mdpeLaid}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 border-r">Commissioned</td>
+                  <td className="p-2 border-r">{formData.mdpeCom}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 border-r">Laid - 20mm</td>
+                  <td className="p-2 border-r">{formData.mdpe20Laid}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 border-r">Commissioned-20mm</td>
+                  <td className="p-2 border-r">{formData.mdpe20Com}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td
+                    className="p-2 border-r text-center font-medium"
+                    rowSpan="2"
+                  >
+                    7
+                  </td>
+                  <td className="p-2 border-r font-medium" rowSpan="2">
+                    Steel Pipeline (In Km.)
+                  </td>
+                  <td className="p-2 border-r">Stringing</td>
+                  <td className="p-2 border-r">{formData.steelStringing}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 border-r">Commissioned</td>
+                  <td className="p-2 border-r">{formData.steelCom}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td
+                    className="p-2 border-r text-center font-medium"
+                    rowSpan="2"
+                  >
+                    8
+                  </td>
+                  <td className="p-2 border-r font-medium" rowSpan="2">
+                    Steel Pipeline (In Inch Km.)
+                  </td>
+                  <td className="p-2 border-r">Stringing</td>
+                  <td className="p-2 border-r">
+                    {formData.steelInchStringing}
+                  </td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 border-r">Commissioned</td>
+                  <td className="p-2 border-r">{formData.steelInchCom}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td
+                    className="p-2 border-r text-center font-medium"
+                    rowSpan="2"
+                  >
+                    9
+                  </td>
+                  <td className="p-2 border-r font-medium" rowSpan="2">
+                    OFC Duct Laying
+                  </td>
+                  <td className="p-2 border-r">With Steel Pipeline (kms.)</td>
+                  <td className="p-2 border-r">{formData.ofcPipeline}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr>
+                  <td className="p-2 border-r">With MDPE (kms.)</td>
+                  <td className="p-2 border-r">{formData.ofcMdpe}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className="flex justify-end mt-6">
+            <button
+              onClick={() => dispatch(setView("previewPart2"))}
+              className="bg-emerald-700 hover:bg-emerald-800 text-white px-5 py-2 rounded text-sm font-medium"
+            >
+              Preview Sales
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* PREVIEW PART 2 */}
+      {view === "previewPart2" && (
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 max-w-6xl mx-auto">
+          <div className="flex justify-between items-center mb-4 border-b pb-3">
+            <h2 className="text-lg font-bold text-gray-800">Preview</h2>
+            <button
+              onClick={() => dispatch(setView("previewPart1"))}
+              className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded text-sm font-medium"
+            >
+              Back
+            </button>
+          </div>
+          <div className="text-center font-semibold text-xs text-gray-700 mb-4">
+            Date: {formData.date}
+          </div>
+          <div className="overflow-x-auto border border-gray-200 rounded">
+            <table className="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr className="bg-gray-100 border-b">
+                  <th className="p-2 border-r w-12 text-center">Sl No</th>
+                  <th className="p-2 border-r w-36">Sales</th>
+                  <th className="p-2 border-r">For the Day</th>
+                  <th className="p-2 border-r">Cumulative for the Month</th>
+                  <th className="p-2 border-r">Cumulative CY 2025</th>
+                  <th className="p-2 border-r">Cumulative CY 2024</th>
+                  <th className="p-2 border-r">Cumulative till Dec 2023</th>
+                  <th className="p-2">Cumulative till Dec 2023</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b">
+                  <td className="p-2 border-r text-center font-medium">10</td>
+                  <td className="p-2 border-r font-medium">
+                    PNG Domestic Sales (SCM)
+                  </td>
+                  <td className="p-2 border-r">{formData.pngDomestic}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 border-r text-center font-medium">11</td>
+                  <td className="p-2 border-r font-medium">
+                    PNG Commercial Sales (SCM)
+                  </td>
+                  <td className="p-2 border-r">{formData.pngCommercial}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 border-r text-center font-medium">12</td>
+                  <td className="p-2 border-r font-medium">
+                    PNG Industrial Sales
+                  </td>
+                  <td className="p-2 border-r">{formData.pngIndustrial}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 border-r text-center font-medium">13</td>
+                  <td className="p-2 border-r font-medium">CNG Sales</td>
+                  <td className="p-2 border-r">{formData.cngSales}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 border-r text-center font-medium">14</td>
+                  <td className="p-2 border-r font-medium">Direct LNG Sales</td>
+                  <td className="p-2 border-r">{formData.directLng}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 border-r text-center font-medium">15</td>
+                  <td className="p-2 border-r font-medium">
+                    Compression Services
+                  </td>
+                  <td className="p-2 border-r">
+                    {formData.compressionServices}
+                  </td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 border-r text-center font-medium">16</td>
+                  <td className="p-2 border-r font-medium">For AG&PGA</td>
+                  <td className="p-2 border-r">{formData.forAggPga}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+                <tr>
+                  <td className="p-2 border-r text-center font-medium">17</td>
+                  <td className="p-2 border-r font-medium">For Others</td>
+                  <td className="p-2 border-r">{formData.forOthers}</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2 border-r">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className="flex justify-end mt-6">
+            <button
+              onClick={() => dispatch(saveDpr())}
+              className="bg-emerald-700 hover:bg-emerald-800 text-white px-5 py-2 rounded text-sm font-medium"
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* SINGLE VIEW PREVIEW FALLBACK */}
       {view === "preview" && (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 max-w-5xl mx-auto">
           <div className="flex justify-between items-center mb-4 border-b pb-3">
