@@ -41,7 +41,7 @@ const DashboardContent = ({ activeTab = "Dashboard" }) => {
   return (
     <div className="flex flex-1 flex-col bg-gray-100 p-8">
       <div>
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Dashboard</h1>
+        <h1 className="text-3xl font-semibold text-gray-800 mb-6">Dashboard</h1>
 
         {/* Metric Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

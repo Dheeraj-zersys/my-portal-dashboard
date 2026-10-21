@@ -1,18 +1,59 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  view: "list", // 'list' | 'wizard' | 'preview'
+  view: "list",
   editMode: false,
   currentStep: 1,
   selectedReportId: null,
   reports: [
     {
       id: 1,
-      date: "01/06/2025",
+      date: "20/10/2026",
       // Step 1: Infrastructure
       domesticReg: "7054587",
       domesticLmc: "54831957",
-      domesticCom: "1435",
+      domesticCom: "3984",
+      commercialReg: "7054587",
+      commercialLmc: "54831957",
+      commercialCom: "1435",
+      industrialReg: "7054587",
+      industrialLmc: "54831957",
+      industrialCom: "1435",
+      // Step 2: CNG Stations
+      omcApplied: "587645",
+      omcCom: "43467",
+      cocoApplied: "3495756",
+      cocoCom: "2421",
+      oem: "43455",
+      conversion: "35787989",
+      // Step 3: Pipelines & OFC
+      mdpeLaid: "64544",
+      mdpeCom: "1320",
+      mdpe20Laid: "24297886",
+      mdpe20Com: "183653",
+      steelStringing: "54767",
+      steelCom: "24134",
+      steelInchStringing: "49358785",
+      steelInchCom: "3354",
+      ofcPipeline: "647634",
+      ofcMdpe: "234467",
+      // Step 4: Sales
+      pngDomestic: "43467",
+      pngCommercial: "7553425",
+      pngIndustrial: "76432",
+      cngSales: "2421817553",
+      directLng: "70543",
+      compressionServices: "2431875654",
+      forAggPga: "64936",
+      forOthers: "3247",
+    },
+    {
+      id: 1,
+      date: "20/10/2026",
+      // Step 1: Infrastructure
+      domesticReg: "7054587",
+      domesticLmc: "54831957",
+      domesticCom: "3984",
       commercialReg: "7054587",
       commercialLmc: "54831957",
       commercialCom: "1435",
@@ -49,7 +90,7 @@ const initialState = {
     },
   ],
   formData: {
-    date: "01/06/2025",
+    date: "20/10/2026",
     domesticReg: "",
     domesticLmc: "",
     domesticCom: "",

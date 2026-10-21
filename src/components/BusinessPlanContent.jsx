@@ -279,12 +279,12 @@ const BusinessPlanContentView = () => {
           ) : (
             <>
               <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <h1 className="text-xl font-semibold text-gray-900">
+                <h1 className="text-3xl font-bold text-gray-800">
                   Business Plan
                 </h1>
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <label className="flex items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-2 text-gray-400 focus-within:border-emerald-700">
-                    <Search size={17} aria-hidden="true" />
+                    <Search size={18} aria-hidden="true" />
                     <input
                       type="search"
                       value={query}
@@ -292,8 +292,8 @@ const BusinessPlanContentView = () => {
                         setQuery(event.target.value);
                         setPage(1);
                       }}
-                      placeholder="Search business plans"
-                      aria-label="Search business plans"
+                      placeholder="Search Business plans"
+                      aria-label="Search Business plans"
                       className="w-full bg-transparent text-sm text-gray-800 outline-none sm:w-44"
                     />
                   </label>

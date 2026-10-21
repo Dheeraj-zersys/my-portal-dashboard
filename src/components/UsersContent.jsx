@@ -3,6 +3,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Pencil,
+  PenIcon,
   Search,
   UserRoundPlus,
 } from "lucide-react";
@@ -17,7 +18,7 @@ const initialUsers = [
     status: "Active",
     unit: "BU 1",
     gaManager: "GA Manager",
-    entity: "AOF",
+    entity: "AGP",
   },
   {
     id: 2,
@@ -28,7 +29,7 @@ const initialUsers = [
     status: "Active",
     unit: "BU 1",
     gaManager: "GA Manager",
-    entity: "AOF",
+    entity: "AGP",
   },
   {
     id: 3,
@@ -39,7 +40,7 @@ const initialUsers = [
     status: "Active",
     unit: "BU 1",
     gaManager: "GA Manager",
-    entity: "AOF",
+    entity: "AGP",
   },
   {
     id: 4,
@@ -50,7 +51,7 @@ const initialUsers = [
     status: "Active",
     unit: "BU 1",
     gaManager: "GA Manager",
-    entity: "AOF",
+    entity: "AGP",
   },
   {
     id: 5,
@@ -61,7 +62,7 @@ const initialUsers = [
     status: "Active",
     unit: "BU 1",
     gaManager: "GA Manager",
-    entity: "AOF",
+    entity: "AGP",
   },
 ];
 
@@ -113,7 +114,9 @@ const UsersContent = () => {
     if (!search) return users;
     return users.filter((user) =>
       Object.values(user).some((value) =>
-        String(value ?? "").toLowerCase().includes(search),
+        String(value ?? "")
+          .toLowerCase()
+          .includes(search),
       ),
     );
   }, [query, users]);
@@ -191,7 +194,7 @@ const UsersContent = () => {
           {isFormOpen ? (
             <>
               <div className="mb-5 flex items-center justify-between">
-                <h1 className="text-xl font-semibold text-gray-900">
+                <h1 className="text-2xl font-bold text-gray-800">
                   {editingUser ? "Edit User" : "Add User"}
                 </h1>
                 <button
@@ -208,7 +211,9 @@ const UsersContent = () => {
               >
                 <div className="grid gap-x-6 gap-y-4 sm:grid-cols-2">
                   <label className={labelClass}>
-                    <span>Name <b className="text-red-500">*</b></span>
+                    <span>
+                      Name <b className="text-red-500">*</b>
+                    </span>
                     <input
                       required
                       value={form.name}
@@ -219,7 +224,9 @@ const UsersContent = () => {
                     />
                   </label>
                   <label className={labelClass}>
-                    <span>Role <b className="text-red-500">*</b></span>
+                    <span>
+                      Role <b className="text-red-500">*</b>
+                    </span>
                     <select
                       value={form.role}
                       onChange={(event) =>
@@ -232,7 +239,9 @@ const UsersContent = () => {
                     </select>
                   </label>
                   <label className={labelClass}>
-                    <span>Email <b className="text-red-500">*</b></span>
+                    <span>
+                      Email <b className="text-red-500">*</b>
+                    </span>
                     <input
                       required
                       type="email"
@@ -244,7 +253,9 @@ const UsersContent = () => {
                     />
                   </label>
                   <label className={labelClass}>
-                    <span>Business Unit <b className="text-red-500">*</b></span>
+                    <span>
+                      Business Unit <b className="text-red-500">*</b>
+                    </span>
                     <select
                       value={form.unit}
                       onChange={(event) =>
@@ -257,7 +268,9 @@ const UsersContent = () => {
                     </select>
                   </label>
                   <label className={labelClass}>
-                    <span>Phone <b className="text-red-500">*</b></span>
+                    <span>
+                      Phone <b className="text-red-500">*</b>
+                    </span>
                     <input
                       required
                       type="tel"
@@ -279,7 +292,10 @@ const UsersContent = () => {
                     />
                   </label>
                   <label className={labelClass}>
-                    <span>Password {!editingUser && <b className="text-red-500">*</b>}</span>
+                    <span>
+                      Password{" "}
+                      {!editingUser && <b className="text-red-500">*</b>}
+                    </span>
                     <input
                       required={!editingUser}
                       type="password"
@@ -291,13 +307,19 @@ const UsersContent = () => {
                     />
                   </label>
                   <label className={labelClass}>
-                    <span>Confirm Password {!editingUser && <b className="text-red-500">*</b>}</span>
+                    <span>
+                      Confirm Password{" "}
+                      {!editingUser && <b className="text-red-500">*</b>}
+                    </span>
                     <input
                       required={!editingUser}
                       type="password"
                       value={form.confirmPassword}
                       onChange={(event) =>
-                        setForm({ ...form, confirmPassword: event.target.value })
+                        setForm({
+                          ...form,
+                          confirmPassword: event.target.value,
+                        })
                       }
                       className={inputClass}
                     />
@@ -344,7 +366,7 @@ const UsersContent = () => {
           ) : (
             <>
               <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <h1 className="text-xl font-semibold text-gray-900">Users</h1>
+                <h1 className="text-3xl font-bold text-gray-800">Users</h1>
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <label className="flex items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-2 text-gray-400 focus-within:border-emerald-700">
                     <Search size={17} aria-hidden="true" />
@@ -410,7 +432,7 @@ const UsersContent = () => {
                             aria-label={`Edit ${user.name}`}
                             className="rounded bg-emerald-50 p-1.5 text-emerald-700 hover:bg-emerald-100 focus-visible:outline-2 focus-visible:outline-emerald-700"
                           >
-                            <Pencil size={15} aria-hidden="true" />
+                            <PenIcon size={20} aria-hidden="true" />
                           </button>
                         </td>
                       </tr>
@@ -430,34 +452,41 @@ const UsersContent = () => {
 
                 <div className="flex flex-col gap-3 px-5 py-4 text-xs text-gray-400 sm:flex-row sm:items-center sm:justify-between">
                   <span>
-                    Showing {filteredUsers.length ? (page - 1) * pageSize + 1 : 0}{" "}
-                    to {Math.min(page * pageSize, filteredUsers.length)} of{" "}
+                    Showing{" "}
+                    {filteredUsers.length ? (page - 1) * pageSize + 1 : 0} to{" "}
+                    {Math.min(page * pageSize, filteredUsers.length)} of{" "}
                     {filteredUsers.length} entries
                   </span>
-                  <div className="flex items-center gap-1" aria-label="Pagination">
+                  <div
+                    className="flex items-center gap-1"
+                    aria-label="Pagination"
+                  >
                     <button
                       type="button"
-                      onClick={() => setPage((current) => Math.max(1, current - 1))}
+                      onClick={() =>
+                        setPage((current) => Math.max(1, current - 1))
+                      }
                       disabled={page === 1}
                       aria-label="Previous page"
                       className="rounded px-2 py-1 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       <ChevronLeft size={15} />
                     </button>
-                    {Array.from({ length: pageCount }, (_, index) => index + 1).map(
-                      (number) => (
-                        <button
-                          key={number}
-                          type="button"
-                          onClick={() => setPage(number)}
-                          aria-label={`Page ${number}`}
-                          aria-current={page === number ? "page" : undefined}
-                          className={`rounded px-2 py-1 ${page === number ? "bg-emerald-700 text-white" : "hover:bg-gray-100"}`}
-                        >
-                          {number}
-                        </button>
-                      ),
-                    )}
+                    {Array.from(
+                      { length: pageCount },
+                      (_, index) => index + 1,
+                    ).map((number) => (
+                      <button
+                        key={number}
+                        type="button"
+                        onClick={() => setPage(number)}
+                        aria-label={`Page ${number}`}
+                        aria-current={page === number ? "page" : undefined}
+                        className={`rounded px-2 py-1 ${page === number ? "bg-emerald-700 text-white" : "hover:bg-gray-100"}`}
+                      >
+                        {number}
+                      </button>
+                    ))}
                     <button
                       type="button"
                       onClick={() =>

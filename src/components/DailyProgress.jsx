@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   setView,
@@ -8,33 +8,54 @@ import {
   updateFormField,
   saveDpr,
 } from "../app/dpr";
-// const [searchTerm, setSearchTerm] = React.useState("");
+
 export default function DprModule() {
   const dispatch = useDispatch();
   const { view, currentStep, editMode, reports, formData } = useSelector(
     (state) => state.dpr,
   );
 
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredReports = reports.filter((rep) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      (rep.date && rep.date.toLowerCase().includes(term)) ||
+      (rep.domesticCom && rep.domesticCom.toLowerCase().includes(term)) ||
+      (rep.commercialCom && rep.commercialCom.toLowerCase().includes(term)) ||
+      (rep.industrialCom && rep.industrialCom.toLowerCase().includes(term))
+    );
+  });
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       {view === "list" && (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-xl font-bold text-gray-800">
+            <h1 className="text-3xl font-semibold text-gray-800">
               Daily Progress Report
             </h1>
-            <button
-              onClick={() => dispatch(startAddDpr())}
-              className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-md font-medium text-sm flex items-center gap-2 transition-colors"
-            >
-              + Add DPR
-            </button>
+            <div className="flex items-center gap-3">
+              <input
+                type="text"
+                placeholder="Search progress report"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 w-64"
+              />
+              <button
+                onClick={() => dispatch(startAddDpr())}
+                className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-md font-medium text-sm flex items-center gap-2 transition-colors"
+              >
+                + Add DPR
+              </button>
+            </div>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-sm">
+            <table className="w-full text-left border border-rounded-2xl border-gray-200 text-sm">
               <thead>
-                <tr className="bg-gray-100 text-gray-700 border-b border-gray-200">
+                <tr className="bg-[#e5e5e5] text-xs font-semibold text-gray-800">
                   <th className="p-3">Sl No</th>
                   <th className="p-3">Date</th>
                   <th className="p-3">Domestic Connections</th>
@@ -44,7 +65,7 @@ export default function DprModule() {
                 </tr>
               </thead>
               <tbody>
-                {reports.map((rep, idx) => (
+                {filteredReports.map((rep, idx) => (
                   <tr
                     key={rep.id}
                     className="border-b border-gray-100 hover:bg-gray-50"
@@ -75,6 +96,31 @@ export default function DprModule() {
               </tbody>
             </table>
           </div>
+
+          {/* Pagination */}
+          <div className="flex justify-between items-center mt-4 text-sm text-gray-500 pt-3 border-t border-gray-100">
+            <div>
+              Showing {filteredReports.length > 0 ? 1 : 0} to{" "}
+              {filteredReports.length} of {reports.length} entries
+            </div>
+            <div className="flex items-center gap-1">
+              <button
+                className="px-2 py-1 rounded text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                disabled
+              >
+                &lt;
+              </button>
+              <button className="bg-emerald-700 text-white px-3 py-1 rounded text-xs font-medium">
+                1
+              </button>
+              <button
+                className="px-2 py-1 rounded text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                disabled
+              >
+                &gt;
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -86,15 +132,15 @@ export default function DprModule() {
             </h2>
             <button
               onClick={() => dispatch(setView("list"))}
-              className="text-gray-500 hover:text-gray-700 font-semibold text-sm"
+              className="text-gray-800  hover:text-gray-500 text-sm"
             >
               Back
             </button>
           </div>
 
-          <div className="mb-6">
-            <p className="text-sm font-semibold text-gray-700 mb-1">
-              Step {currentStep} of 4:{" "}
+          <div className="mb-4">
+            <p className="text-2xl font-semibold text-gray-700 mb-1">
+              Step {currentStep} of 4{" "}
               {
                 ["Infrastructure", "CNG Stations", "Pipelines & OFC", "Sales"][
                   currentStep - 1
@@ -103,7 +149,7 @@ export default function DprModule() {
             </p>
             <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
               <div
-                className="bg-emerald-600 h-full transition-all duration-300"
+                className="bg-emerald-600 h-full transition-all duration-700"
                 style={{ width: `${(currentStep / 4) * 100}%` }}
               ></div>
             </div>
@@ -113,7 +159,7 @@ export default function DprModule() {
           {currentStep === 1 && (
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">
+                <label className="block text-lg font-semibold text-gray-800 mb-1">
                   Date
                 </label>
                 <input
@@ -127,7 +173,7 @@ export default function DprModule() {
                   className="w-full md:w-1/3 border rounded p-2 text-sm"
                 />
               </div>
-              <h3 className="font-bold text-sm text-gray-800 pt-2">
+              <h3 className="font-semibold text-lg text-gray-800 pt-2">
                 Domestic Connections
               </h3>
               <div className="grid grid-cols-3 gap-4">
@@ -182,7 +228,7 @@ export default function DprModule() {
                   />
                 </div>
               </div>
-              <h3 className="font-bold text-sm text-gray-800 pt-2">
+              <h3 className="font-semibold text-lg text-gray-800 pt-2">
                 Commercial
               </h3>
               <div className="grid grid-cols-3 gap-4">
@@ -219,7 +265,7 @@ export default function DprModule() {
                   />
                 </div>
               </div>
-              <h3 className="font-bold text-sm text-gray-800 pt-2">
+              <h3 className="font-semibold text-lg text-gray-800 pt-2">
                 Industrial
               </h3>
               <div className="grid grid-cols-3 gap-4">

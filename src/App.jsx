@@ -25,7 +25,7 @@ function App() {
             aria-expanded={isSidebarOpen}
             aria-controls="app-sidebar"
           >
-            <Menu size={19} />
+            <Menu size={20} />
           </button>
           <img src="/think-gas-logo.png" className="h-9 w-auto" />
         </div>
@@ -37,7 +37,7 @@ function App() {
       </header>
       <div className="flex min-h-0 flex-1">
         {isSidebarOpen && <Sidebar />}
-        <main className="flex min-w-0 flex-1 flex-col">
+        <main className="flex min-w-4 flex-1 flex-col">
           {activeItem === "Users" ? (
             <UsersContent />
           ) : activeItem === "Business Plan" ? (
@@ -53,7 +53,7 @@ function App() {
           )}
         </main>
       </div>
-      <footer className="shrink-0 border-t border-gray-200 bg-white px-6 py-3 text-center text-xs text-gray-500">
+      <footer className="shrink-0 border-t border-gray-400 bg-white px-6 py-6 text-center text-xs text-gray-500">
         v0.1.0 2025 TG Portal. All Rights Reserved
       </footer>
     </div>
