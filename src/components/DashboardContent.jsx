@@ -6,7 +6,6 @@ import { Users, ListChecks, FileText, Globe } from "lucide-react";
 const DashboardContent = ({ activeTab = "Dashboard" }) => {
   const stats = useSelector(selectDashboardStats);
 
-  // If activeTab is not 'Dashboard', return blank area
   if (activeTab !== "Dashboard") {
     return <div className="flex-1 bg-gray-50" />;
   }
@@ -50,7 +49,7 @@ const DashboardContent = ({ activeTab = "Dashboard" }) => {
             return (
               <div
                 key={card.id}
-                className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex items-center space-x-4 hover:shadow-md transition-shadow"
+                className="bg-white rounded-lg p-5 shadow-xl border border-gray-100 flex items-center space-x-4 hover:shadow-md transition-shadow"
               >
                 <div className="w-12 h-12 rounded-full bg-emerald-100/60 flex items-center justify-center flex-shrink-0">
                   <Icon className="w-6 h-6 text-emerald-800" />

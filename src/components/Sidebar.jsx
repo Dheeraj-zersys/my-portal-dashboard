@@ -18,7 +18,7 @@ const navItems = [
 ];
 const subItems = ["GA Manager", "BU Manager"];
 const itemStyle =
-  "flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm font-medium text-[#1a1a1a] transition-colors hover:bg-[#ededef] focus-visible:outline-2 focus-visible:outline-orange-500";
+  "flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-md font-medium text-[#1a1a1a] transition-colors hover:bg-[#ededef] focus-visible:outline-2 focus-visible:outline-orange-500";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -39,7 +39,7 @@ const Sidebar = () => {
             className={`${itemStyle} ${activeItem === name ? "bg-[#ffefe5] text-[#f96200]" : ""}`}
             onClick={() => selectItem(name)}
           >
-            <Icon className="shrink-0 text-lg" />
+            <Icon className="shrink-0 text-xl" />
             <span className="flex-1">{name}</span>
           </button>
         ))}
@@ -49,7 +49,7 @@ const Sidebar = () => {
           onClick={() => dispatch(toggleMasterData())}
           aria-expanded={isMasterDataOpen}
         >
-          <TbGlobe className="shrink-0 text-lg" />
+          <TbGlobe className="shrink-0 text-xl" />
           <span className="flex-1">Master Data</span>
           {isMasterDataOpen ? <GoChevronUp /> : <GoChevronDown />}
         </button>
@@ -58,7 +58,7 @@ const Sidebar = () => {
             {subItems.map((item) => (
               <button
                 key={item}
-                className={`flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-xs font-medium transition-colors hover:bg-[#ededef] focus-visible:outline-2 focus-visible:outline-orange-500 ${activeItem === item ? "text-[#f96200]" : "text-[#1a1a1a]"}`}
+                className={`flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-sm font-medium transition-colors hover:bg-[#ededef] focus-visible:outline-2 focus-visible:outline-orange-500 ${activeItem === item ? "text-[#f96200]" : "text-[#1a1a1a]"}`}
                 onClick={() => selectItem(item)}
                 aria-current={activeItem === item ? "page" : undefined}
               >
