@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Pencil, Eye } from "lucide-react";
 import {
   setView,
   startAddDpr,
@@ -28,10 +29,10 @@ export default function DprModule() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-0 bg-gray-50 p-6">
       {view === "list" && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex justify-between items-center mb-6">
+        <div>
+          <div className="flex justify-between items-center m-1 mb-6">
             <h1 className="text-3xl font-semibold text-gray-800">
               Daily Progress Report
             </h1>
@@ -52,73 +53,74 @@ export default function DprModule() {
             </div>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border border-rounded-2xl border-gray-200 text-sm">
-              <thead>
-                <tr className="bg-[#e5e5e5] text-xs font-semibold text-gray-800">
-                  <th className="p-3">Sl No</th>
-                  <th className="p-3">Date</th>
-                  <th className="p-3">Domestic Connections</th>
-                  <th className="p-3">Commercial</th>
-                  <th className="p-3">Industrial</th>
-                  <th className="p-3">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredReports.map((rep, idx) => (
-                  <tr
-                    key={rep.id}
-                    className="border-b border-gray-100 hover:bg-gray-50"
-                  >
-                    <td className="p-3">{idx + 1}</td>
-                    <td className="p-3">{rep.date}</td>
-                    <td className="p-3">{rep.domesticCom || "0"}</td>
-                    <td className="p-3">{rep.commercialCom || "0"}</td>
-                    <td className="p-3">{rep.industrialCom || "0"}</td>
-                    <td className="p-3 flex gap-3">
-                      <button
-                        onClick={() => dispatch(startEditDpr(rep.id))}
-                        className="text-emerald-600 hover:text-emerald-800"
-                        title="Edit"
-                      >
-                        ✏️
-                      </button>
-                      <button
-                        onClick={() => dispatch(setView("preview"))}
-                        className="text-blue-600 hover:text-blue-800"
-                        title="Preview"
-                      >
-                        👁️
-                      </button>
-                    </td>
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-sm">
+                <thead>
+                  <tr className="bg-[#e5e5e5] text-xs font-semibold text-gray-800 border-b border-gray-200">
+                    <th className="p-3">Sl No</th>
+                    <th className="p-3">Date</th>
+                    <th className="p-3">Domestic Connections</th>
+                    <th className="p-3">Commercial</th>
+                    <th className="p-3">Industrial</th>
+                    <th className="p-3">Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Pagination */}
-          <div className="flex justify-between items-center mt-4 text-sm text-gray-500 pt-3 border-t border-gray-100">
-            <div>
-              Showing {filteredReports.length > 0 ? 1 : 0} to{" "}
-              {filteredReports.length} of {reports.length} entries
+                </thead>
+                <tbody>
+                  {filteredReports.map((rep, idx) => (
+                    <tr
+                      key={rep.id}
+                      className="border-b border-gray-100 hover:bg-gray-50 last:border-b-0"
+                    >
+                      <td className="p-3">{idx + 1}</td>
+                      <td className="p-3">{rep.date}</td>
+                      <td className="p-3">{rep.domesticCom || "0"}</td>
+                      <td className="p-3">{rep.commercialCom || "0"}</td>
+                      <td className="p-3">{rep.industrialCom || "0"}</td>
+                      <td className="p-3 flex items-center gap-3">
+                        <button
+                          onClick={() => dispatch(startEditDpr(rep.id))}
+                          className="text-emerald-600 hover:text-emerald-800"
+                          title="Edit"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => dispatch(setView("preview"))}
+                          className="text-emerald-600 hover:text-emerald-800"
+                          title="Preview"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-            <div className="flex items-center gap-1">
-              <button
-                className="px-2 py-1 rounded text-gray-400 hover:text-gray-600 disabled:opacity-50"
-                disabled
-              >
-                &lt;
-              </button>
-              <button className="bg-emerald-700 text-white px-3 py-1 rounded text-xs font-medium">
-                1
-              </button>
-              <button
-                className="px-2 py-1 rounded text-gray-400 hover:text-gray-600 disabled:opacity-50"
-                disabled
-              >
-                &gt;
-              </button>
+
+            <div className="flex justify-between items-center text-sm text-gray-500 p-4 border-t border-gray-200 bg-white">
+              <div>
+                Showing {filteredReports.length > 0 ? 1 : 0} to{" "}
+                {filteredReports.length} of {reports.length} entries
+              </div>
+              <div className="flex items-center gap-1">
+                <button
+                  className="px-2 py-1 rounded text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                  disabled
+                >
+                  &lt;
+                </button>
+                <button className="bg-emerald-700 text-white px-3 py-1 rounded text-xs font-medium">
+                  1
+                </button>
+                <button
+                  className="px-2 py-1 rounded text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                  disabled
+                >
+                  &gt;
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -132,7 +134,7 @@ export default function DprModule() {
             </h2>
             <button
               onClick={() => dispatch(setView("list"))}
-              className="text-gray-800  hover:text-gray-500 text-sm"
+              className="text-gray-800 hover:text-gray-500 text-sm"
             >
               Back
             </button>
@@ -149,7 +151,7 @@ export default function DprModule() {
             </p>
             <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
               <div
-                className="bg-emerald-600 h-full transition-all duration-700"
+                className="bg-emerald-600 h-full transition-all duration-300"
                 style={{ width: `${(currentStep / 4) * 100}%` }}
               ></div>
             </div>
