@@ -86,7 +86,7 @@ export default function App() {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: 'url("/assets/gas station.jpg")',
+          backgroundImage: 'url("/public/gas-station.jpg")',
         }}
       >
         <div className="absolute inset-0 bg-black/20" />
@@ -102,7 +102,7 @@ export default function App() {
           <>
             <div className="flex justify-center mb-6">
               <img
-                src="/assets/logo.png"
+                src="/public/logo.png"
                 alt="TG Portal"
                 className="h-auto w-60"
               />
@@ -153,7 +153,7 @@ export default function App() {
           <>
             <div className="flex justify-center mb-5">
               <img
-                src="/assets/logo.png"
+                src="/public/logo.png"
                 alt="TG Portal"
                 className="h-auto w-40"
               />
@@ -332,7 +332,7 @@ export default function App() {
           <>
             <div className="flex justify-center mb-4">
               <img
-                src="/assets/logo.png"
+                src="/public/logo.png"
                 alt="TG Portal"
                 className="h-auto w-60"
               />

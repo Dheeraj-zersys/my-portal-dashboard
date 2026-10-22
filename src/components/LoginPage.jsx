@@ -8,7 +8,7 @@ export default function LoginPage() {
       <div
         className="absolute inset-0 bg-cover bg-center opacity-90"
         style={{
-          backgroundImage: 'url("/assets/gas%20station.jpg")',
+          backgroundImage: 'url("/public/gas-station.jpg")',
         }}
       >
         <div className="absolute inset-0 bg-black/30" />
