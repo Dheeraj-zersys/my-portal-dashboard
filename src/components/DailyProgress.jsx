@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Pencil, Eye } from "lucide-react";
+import { PenBoxIcon, Eye } from "lucide-react";
 import {
   setView,
   startAddDpr,
@@ -55,7 +55,7 @@ export default function DprModule() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-sm">
                 <thead>
@@ -81,18 +81,18 @@ export default function DprModule() {
                       <td className="p-3">{rep.industrialCom || "0"}</td>
                       <td className="p-3 flex items-center gap-3">
                         <button
-                          onClick={() => dispatch(startEditDpr(rep.id))}
-                          className="text-emerald-600 hover:text-emerald-800"
-                          title="Edit"
-                        >
-                          <Pencil className="w-4 h-4" />
-                        </button>
-                        <button
                           onClick={() => dispatch(setView("preview"))}
                           className="text-emerald-600 hover:text-emerald-800"
                           title="Preview"
                         >
                           <Eye className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => dispatch(startEditDpr(rep.id))}
+                          className="text-emerald-600 hover:text-emerald-800"
+                          title="Edit"
+                        >
+                          <PenBoxIcon className="w-4 h-4" />
                         </button>
                       </td>
                     </tr>
@@ -129,7 +129,7 @@ export default function DprModule() {
       )}
 
       {view === "wizard" && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 max-w-4xl mx-auto">
+        <div className="bg-white rounded-lg border border-gray-200 p-5 max-w-4xl mx-auto">
           <div className="flex justify-between items-center mb-4 pb-3">
             <h2 className="text-2xl font-bold text-gray-800">
               {editMode ? "Edit DPR" : "Add DPR"}
@@ -802,7 +802,7 @@ export default function DprModule() {
 
       {/* PREVIEW PART 1 */}
       {view === "previewPart1" && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 max-w-6xl mx-auto">
+        <div className="bg-white rounded-lg border border-gray-200 p-6 max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-4 border-b pb-3">
             <h2 className="text-lg font-bold text-gray-800">Preview</h2>
             <button
@@ -1125,7 +1125,7 @@ export default function DprModule() {
 
       {/* PREVIEW PART 2 */}
       {view === "previewPart2" && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 max-w-6xl mx-auto">
+        <div className="bg-white rounded-lg border border-gray-200 p-6 max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-4 border-b pb-3">
             <h2 className="text-lg font-bold text-gray-800">Preview</h2>
             <button
@@ -1259,7 +1259,7 @@ export default function DprModule() {
 
       {/* SINGLE VIEW PREVIEW FALLBACK */}
       {view === "preview" && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 max-w-5xl mx-auto">
+        <div className="bg-white rounded-lg border border-gray-200 p-6 max-w-5xl mx-auto">
           <div className="flex justify-between items-center mb-4 border-b pb-3">
             <h2 className="text-lg font-bold text-gray-800">
               Preview DPR Report

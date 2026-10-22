@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, Pencil, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, PenBoxIcon, Search } from "lucide-react";
 
 const initialPlans = [
   {
@@ -74,7 +74,7 @@ const emptyForm = {
   domestic: "",
 };
 const inputClass =
-  "w-full rounded border border-gray-200 bg-[#f8f9fc] px-2 py-1.5 text-xs text-gray-800 outline-none focus:border-emerald-700";
+  "w-full rounded-sm border border-gray-200 bg-[#f8f9fc] px-4 py-2 text-xs text-gray-800 outline-none focus:border-emerald-700";
 const labelClass = "space-y-1 text-xs font-medium text-gray-700";
 
 const formatDate = (date) => {
@@ -171,24 +171,24 @@ const BusinessPlanContentView = () => {
           {isFormOpen ? (
             <>
               <div className="mb-5 flex items-center justify-between">
-                <h1 className="text-xl font-semibold text-gray-900">
+                <h1 className="text-3xl font-semibold text-gray-900">
                   {editingPlan ? "Edit Business Plan" : "Add Business Plan"}
                 </h1>
                 <button
                   type="button"
                   onClick={closeForm}
-                  className="rounded border border-gray-600 px-5 py-3 text-xs text-gray-700 hover:bg-white"
+                  className="rounded border border-gray-600 px-5 py-3 text-sm text-gray-700 hover:bg-white"
                 >
-                  Back
+                  <ChevronLeft size={15} aria-hidden="true" /> Back
                 </button>
               </div>
               <form
                 onSubmit={savePlan}
-                className="rounded-lg bg-white p-4 shadow-sm sm:p-5"
+                className="rounded-lg bg-white p-4 sm:p-5 shadow-sm"
               >
-                <div className="grid gap-3 border-b border-gray-100 pb-3 sm:grid-cols-3">
-                  <label className="flex min-w-0 items-center gap-1 text-xs font-semibold text-gray-800">
-                    <span className="shrink-0">Entity Name:</span>
+                <div className="grid border-b border-gray-200 pb-4 gap-6 sm:grid-cols-3">
+                  <label className="flex min-w-0 items-center text-base font-medium text-gray-800">
+                    <span className="shrink-0 mr-2">Entity Name:</span>
                     <input
                       required
                       value={form.entityName}
@@ -196,11 +196,11 @@ const BusinessPlanContentView = () => {
                         setForm({ ...form, entityName: event.target.value })
                       }
                       aria-label="Entity Name"
-                      className="min-w-0 flex-1 bg-transparent text-xs font-semibold outline-none focus-visible:ring-1 focus-visible:ring-emerald-700"
+                      className="min-w-0 bg-transparent text-sm font-medium outline-none focus-visible:ring-1 focus-visible:ring-emerald-700"
                     />
                   </label>
-                  <label className="flex min-w-0 items-center gap-1 text-xs font-semibold text-gray-800">
-                    <span className="shrink-0">GA Name:</span>
+                  <label className="flex min-w-0 items-center text-base font-medium text-gray-800">
+                    <span className="shrink-0 mr-2">GA Name:</span>
                     <input
                       required
                       value={form.gaName}
@@ -208,11 +208,11 @@ const BusinessPlanContentView = () => {
                         setForm({ ...form, gaName: event.target.value })
                       }
                       aria-label="GA Name"
-                      className="min-w-0 flex-1 bg-transparent text-xs font-semibold outline-none focus-visible:ring-1 focus-visible:ring-emerald-700"
+                      className="min-w-0 bg-transparent text-sm font-medium outline-none focus-visible:ring-1 focus-visible:ring-emerald-700"
                     />
                   </label>
-                  <label className="flex min-w-0 items-center gap-1 text-xs font-semibold text-gray-800">
-                    <span className="shrink-0">District:</span>
+                  <label className="flex min-w-0 items-center text-base font-medium text-gray-800">
+                    <span className="shrink-0 mr-2">District:</span>
                     <input
                       required
                       value={form.district}
@@ -220,15 +220,18 @@ const BusinessPlanContentView = () => {
                         setForm({ ...form, district: event.target.value })
                       }
                       aria-label="District"
-                      className="min-w-0 flex-1 bg-transparent text-xs font-semibold outline-none focus-visible:ring-1 focus-visible:ring-emerald-700"
+                      className="min-w-0 bg-transparent text-sm font-medium outline-none focus-visible:ring-1 focus-visible:ring-emerald-700"
                     />
                   </label>
                 </div>
-                <div className="mt-3 max-w-sm">
+
+                <div className="mt-4 max-w-sm">
                   <label className={labelClass}>
-                    <span>
-                      Date<span className="text-red-500">*</span>
-                    </span>
+                    <p className="mb-2 text-base font-medium text-gray-900">
+                      <span>
+                        Date<span className="text-red-500">*</span>
+                      </span>
+                    </p>
                     <input
                       required
                       type="date"
@@ -240,17 +243,20 @@ const BusinessPlanContentView = () => {
                     />
                   </label>
                 </div>
-                <p className="mb-2 mt-3 text-xs font-semibold text-gray-700">
+
+                <p className="mb-3 mt-5 text-base font-medium text-gray-900">
                   Segment<span className="text-red-500">*</span>
                 </p>
-                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+
+                {/* Segment Fields Grid with Column Separation Margins */}
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   {[
                     ["transport", "Transport"],
-                    ["industrialMarket", "Industrial Mkt"],
+                    ["industrialMarket", "Industrial PNG"],
                     ["commercial", "Commercial"],
                     ["domestic", "Domestic"],
                   ].map(([field, label]) => (
-                    <label key={field}>
+                    <label key={field} className="block">
                       <input
                         required
                         aria-label={label}
@@ -266,10 +272,11 @@ const BusinessPlanContentView = () => {
                     </label>
                   ))}
                 </div>
-                <div className="mt-6 flex justify-center">
+
+                <div className="mt-8 flex justify-center">
                   <button
                     type="submit"
-                    className="rounded bg-emerald-700 px-4 py-1.5 text-xs font-medium text-white hover:bg-emerald-800"
+                    className="rounded bg-emerald-700 px-6 py-2.5 text-sm font-medium text-white hover:bg-emerald-800"
                   >
                     {editingPlan ? "Update Business Plan" : "Add Business Plan"}
                   </button>
@@ -307,9 +314,9 @@ const BusinessPlanContentView = () => {
                 </div>
               </div>
 
-              <div className="overflow-x-auto rounded-lg bg-white shadow-sm">
-                <table className="w-full min-w-[900px] border-collapse text-left text-sm">
-                  <thead className="bg-[#e5e5e5] text-xs font-semibold text-gray-800">
+              <div className="overflow-x-auto rounded-lg bg-white">
+                <table className="w-full min-w-[900px] border-collapse text-center text-sm">
+                  <thead className="bg-[#e5e5e5] text-sm font-semibold text-gray-800">
                     <tr>
                       <th className="px-3 py-3">Sl No</th>
                       <th className="px-3 py-3">Entity Name</th>
@@ -317,7 +324,7 @@ const BusinessPlanContentView = () => {
                       <th className="px-3 py-3">District</th>
                       <th className="px-3 py-3">Date</th>
                       <th className="px-3 py-3">Transport</th>
-                      <th className="px-3 py-3">Industrial Mkt</th>
+                      <th className="px-3 py-3">Industrial PNG</th>
                       <th className="px-3 py-3">Commercial</th>
                       <th className="px-3 py-3">Domestic</th>
                       <th className="px-3 py-3 text-center">Action</th>
@@ -344,7 +351,7 @@ const BusinessPlanContentView = () => {
                             aria-label={`Edit business plan for ${plan.gaName}`}
                             className="rounded bg-emerald-50 p-1.5 text-emerald-700 hover:bg-emerald-100 focus-visible:outline-2 focus-visible:outline-emerald-700"
                           >
-                            <Pencil size={15} aria-hidden="true" />
+                            <PenBoxIcon size={15} aria-hidden="true" />
                           </button>
                         </td>
                       </tr>
@@ -419,6 +426,7 @@ const BusinessPlanContentView = () => {
     </div>
   );
 };
+
 const BusinessPlanContent = () => (
   <BusinessPlanContentView key={seedSignature} />
 );

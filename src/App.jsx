@@ -7,7 +7,16 @@ import GAManagerContent from "./components/MasterData/GAManagerContent";
 import BUManagerContent from "./components/MasterData/BUManagerContent";
 import DailyProgressReport from "./components/DailyProgress";
 import { useSelector } from "react-redux";
-import { Bell, Menu } from "lucide-react";
+import {
+  BatteryFullIcon,
+  Bell,
+  BellCheck,
+  BellDotIcon,
+  BellElectricIcon,
+  BellRing,
+  Menu,
+} from "lucide-react";
+import { BiBellPlus } from "react-icons/bi";
 
 // Dashboard App Component
 function DashboardApp() {
@@ -31,9 +40,13 @@ function DashboardApp() {
           <img src="/think-gas-logo.png" className="h-9 w-auto" />
         </div>
         <div className="flex items-center gap-4">
-          <span className="p-2 text-gray-500" aria-hidden="true">
-            <Bell size={17} />
-          </span>
+          <button
+            type="button"
+            className="rounded p-1.5 text-gray-600 hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-orange-500"
+            aria-label="Notifications"
+          >
+            <Bell size={20} />
+          </button>
         </div>
       </header>
       <div className="flex min-h-0 flex-1">

@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
+import Select from "react-select";
 import {
   ChevronLeft,
   ChevronRight,
-  Pencil,
-  PenIcon,
+  PenBoxIcon,
   Search,
-  UserRoundPlus,
+  Plus,
 } from "lucide-react";
 
 const initialUsers = [
@@ -99,6 +99,35 @@ const getSavedUsers = () => {
 const inputClass =
   "w-full rounded border border-gray-200 bg-[#f8f9fc] px-3 py-2 text-sm text-gray-800 outline-none focus:border-emerald-700";
 const labelClass = "space-y-1 text-xs font-medium text-gray-700";
+
+const customSelectStyles = {
+  control: (provided, state) => ({
+    ...provided,
+    backgroundColor: "#f8f9fc",
+    borderColor: state.isFocused ? "#047857" : "#e5e7eb",
+    borderRadius: "0.375rem",
+    minHeight: "38px",
+    boxShadow: "none",
+    "&:hover": {
+      borderColor: state.isFocused ? "#047857" : "#d1d5db",
+    },
+  }),
+  valueContainer: (provided) => ({
+    ...provided,
+    padding: "0 8px",
+  }),
+  input: (provided) => ({
+    ...provided,
+    margin: "0",
+    color: "#1f2937",
+    fontSize: "0.875rem",
+  }),
+  singleValue: (provided) => ({
+    ...provided,
+    color: "#1f2937",
+    fontSize: "0.875rem",
+  }),
+};
 
 const UsersContent = () => {
   const [users, setUsers] = useState(getSavedUsers);
@@ -194,15 +223,15 @@ const UsersContent = () => {
           {isFormOpen ? (
             <>
               <div className="mb-5 flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-gray-800">
+                <h1 className="text-3xl font-semibold text-gray-800">
                   {editingUser ? "Edit User" : "Add User"}
                 </h1>
                 <button
                   type="button"
                   onClick={closeForm}
-                  className="rounded border border-gray-300 px-3 py-1.5 text-xs text-gray-700 hover:bg-white"
+                  className="border rounded-md pr-4 pl-4 pt-2 pb-2 px-3 py-1.5 text-sm text-gray-900 hover:bg-white"
                 >
-                  Back
+                  Back <ChevronLeft size={15} aria-hidden="true" />
                 </button>
               </div>
               <form
@@ -211,9 +240,11 @@ const UsersContent = () => {
               >
                 <div className="grid gap-x-6 gap-y-4 sm:grid-cols-2">
                   <label className={labelClass}>
-                    <span>
-                      Name <b className="text-red-500">*</b>
-                    </span>
+                    <p className=" text-sm font-medium text-gray-900">
+                      <span>
+                        Name <b className="text-red-500">*</b>
+                      </span>
+                    </p>
                     <input
                       required
                       value={form.name}
@@ -223,25 +254,33 @@ const UsersContent = () => {
                       className={inputClass}
                     />
                   </label>
-                  <label className={labelClass}>
-                    <span>
-                      Role <b className="text-red-500">*</b>
-                    </span>
-                    <select
-                      value={form.role}
-                      onChange={(event) =>
-                        setForm({ ...form, role: event.target.value })
+
+                  <div className={labelClass}>
+                    <p className=" text-sm font-medium text-gray-900">
+                      <span>
+                        Role <b className="text-red-500">*</b>
+                      </span>
+                    </p>
+                    <Select
+                      value={{ value: form.role, label: form.role }}
+                      onChange={(selectedOption) =>
+                        setForm({ ...form, role: selectedOption.value })
                       }
-                      className={inputClass}
-                    >
-                      <option>Admin</option>
-                      <option>User</option>
-                    </select>
-                  </label>
+                      options={[
+                        { value: "Admin", label: "Admin" },
+                        { value: "User", label: "User" },
+                      ]}
+                      styles={customSelectStyles}
+                      isSearchable={false}
+                    />
+                  </div>
+
                   <label className={labelClass}>
-                    <span>
-                      Email <b className="text-red-500">*</b>
-                    </span>
+                    <p className=" text-sm font-medium text-gray-900">
+                      <span>
+                        Email <b className="text-red-500">*</b>
+                      </span>
+                    </p>
                     <input
                       required
                       type="email"
@@ -252,25 +291,33 @@ const UsersContent = () => {
                       className={inputClass}
                     />
                   </label>
-                  <label className={labelClass}>
-                    <span>
-                      Business Unit <b className="text-red-500">*</b>
-                    </span>
-                    <select
-                      value={form.unit}
-                      onChange={(event) =>
-                        setForm({ ...form, unit: event.target.value })
+
+                  <div className={labelClass}>
+                    <p className=" text-sm font-medium text-gray-900">
+                      <span>
+                        Business Unit <b className="text-red-500">*</b>
+                      </span>
+                    </p>
+                    <Select
+                      value={{ value: form.unit, label: form.unit }}
+                      onChange={(selectedOption) =>
+                        setForm({ ...form, unit: selectedOption.value })
                       }
-                      className={inputClass}
-                    >
-                      <option>BU 1</option>
-                      <option>BU 2</option>
-                    </select>
-                  </label>
+                      options={[
+                        { value: "BU 1", label: "BU 1" },
+                        { value: "BU 2", label: "BU 2" },
+                      ]}
+                      styles={customSelectStyles}
+                      isSearchable={false}
+                    />
+                  </div>
+
                   <label className={labelClass}>
-                    <span>
-                      Phone <b className="text-red-500">*</b>
-                    </span>
+                    <p className=" text-sm font-medium text-gray-900">
+                      <span>
+                        Phone <b className="text-red-500">*</b>
+                      </span>
+                    </p>
                     <input
                       required
                       type="tel"
@@ -282,7 +329,9 @@ const UsersContent = () => {
                     />
                   </label>
                   <label className={labelClass}>
-                    <span>GA Name</span>
+                    <p className=" text-sm font-medium text-gray-900">
+                      <span>GA Name</span>
+                    </p>
                     <input
                       value={form.gaManager}
                       onChange={(event) =>
@@ -292,10 +341,12 @@ const UsersContent = () => {
                     />
                   </label>
                   <label className={labelClass}>
-                    <span>
-                      Password{" "}
-                      {!editingUser && <b className="text-red-500">*</b>}
-                    </span>
+                    <p className=" text-sm font-medium text-gray-900">
+                      <span>
+                        Password{" "}
+                        {!editingUser && <b className="text-red-500">*</b>}
+                      </span>
+                    </p>
                     <input
                       required={!editingUser}
                       type="password"
@@ -307,10 +358,12 @@ const UsersContent = () => {
                     />
                   </label>
                   <label className={labelClass}>
-                    <span>
-                      Confirm Password{" "}
-                      {!editingUser && <b className="text-red-500">*</b>}
-                    </span>
+                    <p className=" text-sm font-medium text-gray-900">
+                      <span>
+                        Confirm Password{" "}
+                        {!editingUser && <b className="text-red-500">*</b>}
+                      </span>
+                    </p>
                     <input
                       required={!editingUser}
                       type="password"
@@ -325,7 +378,9 @@ const UsersContent = () => {
                     />
                   </label>
                   <label className={labelClass}>
-                    <span>Entity</span>
+                    <p className=" text-sm font-medium text-gray-900">
+                      <span>Entity</span>
+                    </p>
                     <input
                       value={form.entity}
                       onChange={(event) =>
@@ -356,7 +411,7 @@ const UsersContent = () => {
                 <h1 className="text-3xl font-bold text-gray-800">Users</h1>
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <label className="flex items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-2 text-gray-400 focus-within:border-emerald-700">
-                    <Search size={17} aria-hidden="true" />
+                    <Search size={17} aria-hidden="true" color="#62666d" />
                     <input
                       type="search"
                       value={query}
@@ -374,44 +429,68 @@ const UsersContent = () => {
                     onClick={openNewUser}
                     className="inline-flex items-center justify-center gap-2 rounded-md bg-emerald-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
                   >
-                    <UserRoundPlus size={16} aria-hidden="true" />
+                    <Plus size={16} aria-hidden="true" />
                     Add New User
                   </button>
                 </div>
               </div>
 
-              <div className="overflow-x-auto rounded-lg bg-white shadow-sm">
+              <div className="overflow-x-auto rounded-lg bg-white border border-gray-200">
                 <table className="w-full min-w-[760px] border-collapse text-left text-sm">
-                  <thead className="bg-[#e5e5e5] text-xs font-semibold text-gray-800">
+                  <thead className="bg-[#e5e5e5] text-xs font-semibold text-gray-900 border-b border-gray-200">
                     <tr>
-                      <th className="px-4 py-3">Sl No</th>
-                      <th className="px-4 py-3">Name</th>
-                      <th className="px-4 py-3">Email</th>
-                      <th className="px-4 py-3">Phone</th>
-                      <th className="px-4 py-3">Role</th>
-                      <th className="px-4 py-3">Status</th>
-                      <th className="px-4 py-3">Business Unit</th>
+                      <th className="px-4 py-3 border-r border-gray-200">
+                        Sl No
+                      </th>
+                      <th className="px-4 py-3 border-r border-gray-200">
+                        Name
+                      </th>
+                      <th className="px-4 py-3 border-r border-gray-200">
+                        Email
+                      </th>
+                      <th className="px-4 py-3 border-r border-gray-200">
+                        Phone
+                      </th>
+                      <th className="px-4 py-3 border-r border-gray-200">
+                        Role
+                      </th>
+                      <th className="px-4 py-3 border-r border-gray-200">
+                        Status
+                      </th>
+                      <th className="px-4 py-3 border-r border-gray-200">
+                        Business Unit
+                      </th>
                       <th className="px-4 py-3 text-center">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100 text-gray-800">
+                  <tbody className="divide-y divide-gray-200 text-gray-800">
                     {visibleUsers.map((user, index) => (
                       <tr key={user.id} className="hover:bg-gray-50">
-                        <td className="px-4 py-3">
+                        <td className="px-4 py-3 border-r border-gray-200">
                           {(page - 1) * pageSize + index + 1}
                         </td>
-                        <td className="px-4 py-3">{user.name}</td>
-                        <td className="px-4 py-3">{user.email}</td>
-                        <td className="px-4 py-3">{user.phone}</td>
-                        <td className="px-4 py-3">{user.role}</td>
-                        <td className="px-4 py-3">
+                        <td className="px-4 py-3 border-r border-gray-200">
+                          {user.name}
+                        </td>
+                        <td className="px-4 py-3 border-r border-gray-200">
+                          {user.email}
+                        </td>
+                        <td className="px-4 py-3 border-r border-gray-200">
+                          {user.phone}
+                        </td>
+                        <td className="px-4 py-3 border-r border-gray-200">
+                          {user.role}
+                        </td>
+                        <td className="px-4 py-3 border-r border-gray-200">
                           <span
                             className={`rounded-full px-2.5 py-1 text-xs font-semibold text-white ${user.status === "Active" ? "bg-green-500" : "bg-gray-400"}`}
                           >
                             {user.status}
                           </span>
                         </td>
-                        <td className="px-4 py-3">{user.unit}</td>
+                        <td className="px-4 py-3 border-r border-gray-200">
+                          {user.unit}
+                        </td>
                         <td className="px-4 py-3 text-center">
                           <button
                             type="button"
@@ -419,7 +498,7 @@ const UsersContent = () => {
                             aria-label={`Edit ${user.name}`}
                             className="rounded bg-emerald-50 p-1.5 text-emerald-700 hover:bg-emerald-100 focus-visible:outline-2 focus-visible:outline-emerald-700"
                           >
-                            <PenIcon size={20} aria-hidden="true" />
+                            <PenBoxIcon size={17} aria-hidden="true" />
                           </button>
                         </td>
                       </tr>
@@ -437,7 +516,7 @@ const UsersContent = () => {
                   </tbody>
                 </table>
 
-                <div className="flex flex-col gap-3 px-5 py-4 text-xs text-gray-400 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-col gap-3 px-5 py-4 text-xs text-gray-400 sm:flex-row sm:items-center sm:justify-between border-t border-gray-200">
                   <span>
                     Showing{" "}
                     {filteredUsers.length ? (page - 1) * pageSize + 1 : 0} to{" "}
