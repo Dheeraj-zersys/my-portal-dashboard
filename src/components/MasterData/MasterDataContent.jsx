@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   ChevronLeft,
   ChevronRight,
-  Pencil,
+  PenBoxIcon,
   Plus,
   Search,
   X,
@@ -242,7 +242,7 @@ const MasterDataContent = ({
                         aria-label={`Edit ${entity} ${manager.name}`}
                         className="rounded bg-emerald-50 p-1.5 text-emerald-700 hover:bg-emerald-100 focus-visible:outline-2 focus-visible:outline-emerald-700"
                       >
-                        <Pencil size={15} aria-hidden="true" />
+                        <PenBoxIcon size={15} aria-hidden="true" />
                       </button>
                     </td>
                   </tr>
