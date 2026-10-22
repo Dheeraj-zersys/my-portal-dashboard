@@ -101,7 +101,7 @@ export default function DprModule() {
               </table>
             </div>
 
-            <div className="flex justify-between items-center text-sm text-gray-500 p-4 border-t border-gray-100 bg-white">
+            <div className="flex justify-between items-center text-xs text-gray-500 p-4 border-t border-gray-100 bg-white">
               <div>
                 Showing {filteredReports.length > 0 ? 1 : 0} to{" "}
                 {filteredReports.length} of {reports.length} entries

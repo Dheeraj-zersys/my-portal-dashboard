@@ -282,7 +282,7 @@ const UsersContent = () => {
                     />
                   </label>
                   <label className={labelClass}>
-                    <span>GA Manager</span>
+                    <span>GA Name</span>
                     <input
                       value={form.gaManager}
                       onChange={(event) =>
@@ -333,19 +333,6 @@ const UsersContent = () => {
                       }
                       className={inputClass}
                     />
-                  </label>
-                  <label className={labelClass}>
-                    <span>Status</span>
-                    <select
-                      value={form.status}
-                      onChange={(event) =>
-                        setForm({ ...form, status: event.target.value })
-                      }
-                      className={inputClass}
-                    >
-                      <option>Active</option>
-                      <option>Inactive</option>
-                    </select>
                   </label>
                 </div>
                 {formError && (
