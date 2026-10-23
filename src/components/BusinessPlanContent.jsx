@@ -177,7 +177,7 @@ const BusinessPlanContentView = () => {
                 <button
                   type="button"
                   onClick={closeForm}
-                  className="flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-800 shadow-sm hover:bg-gray-50 transition"
+                  className="flex items-center gap-1.5 rounded-lg border border-gray-600 bg-white px-4 py-2 text-sm font-medium text-gray-800 shadow-sm hover:bg-gray-50 transition"
                 >
                   <ChevronLeft size={16} aria-hidden="true" />
                   <span>Back</span>

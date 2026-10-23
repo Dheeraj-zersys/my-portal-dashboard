@@ -7,21 +7,17 @@ import GAManagerContent from "./components/MasterData/GAManagerContent";
 import BUManagerContent from "./components/MasterData/BUManagerContent";
 import DailyProgressReport from "./components/DailyProgress";
 import { useSelector } from "react-redux";
-import {
-  BatteryFullIcon,
-  Bell,
-  BellCheck,
-  BellDotIcon,
-  BellElectricIcon,
-  BellRing,
-  Menu,
-} from "lucide-react";
+import { Bell, LogOut, Menu } from "lucide-react";
 import { BiBellPlus } from "react-icons/bi";
 
-// Dashboard App Component
-function DashboardApp() {
+function DashboardApp({ email, setIsLoggedIn }) {
   const activeItem = useSelector((state) => state.navigation.activeItem);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
+  const rawName = email ? email.split("@")[0] : "Example";
+  const displayName =
+    rawName.charAt(0).toUpperCase() + rawName.slice(1).toLowerCase();
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-100">
@@ -39,7 +35,7 @@ function DashboardApp() {
           </button>
           <img src="/think-gas-logo.png" className="h-9 w-auto" />
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 relative">
           <button
             type="button"
             className="rounded p-1.5 text-gray-600 hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-orange-500"
@@ -47,6 +43,52 @@ function DashboardApp() {
           >
             <Bell size={20} />
           </button>
+
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+              className="flex items-center gap-2 rounded-full py-1 pl-1 pr-3 hover:bg-gray-100 transition focus:outline-none"
+              aria-expanded={isUserMenuOpen}
+            >
+              <div className="h-8 w-8 rounded-full bg-[#11733f] text-white flex items-center justify-center font-semibold text-sm">
+                {displayName.charAt(0)}
+              </div>
+              <span className="text-sm font-medium text-gray-800">
+                {displayName}
+              </span>
+            </button>
+
+            {isUserMenuOpen && (
+              <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-100 py-4 px-5 z-50">
+                <div className="flex items-center gap-3 pb-3 border-b border-gray-100">
+                  <div className="h-10 w-10 rounded-full bg-[#11733f] text-white flex items-center justify-center font-bold text-base">
+                    {displayName.charAt(0)}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800 text-base leading-tight">
+                      {displayName}
+                    </h3>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      {email || "xyz@example.com"}
+                    </p>
+                    <span className="inline-block mt-1.5 px-2.5 py-0.5 text-xs text-[#11733f] border border-[#11733f] rounded-full font-medium">
+                      Super Admin
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsLoggedIn(false)}
+                  className="w-full mt-3 flex items-center gap-2.5 text-left text-sm text-gray-700 hover:text-gray-900 py-2 rounded transition"
+                >
+                  <LogOut size={16} />
+                  <span>Logout</span>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </header>
       <div className="flex min-h-0 flex-1">
@@ -90,7 +132,7 @@ export default function App() {
   const [resetComplete, setResetComplete] = useState(false);
 
   if (isLoggedIn) {
-    return <DashboardApp />;
+    return <DashboardApp email={email} setIsLoggedIn={setIsLoggedIn} />;
   }
 
   return (
