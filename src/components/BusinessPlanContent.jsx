@@ -317,7 +317,7 @@ const BusinessPlanContentView = () => {
 
               <div className="overflow-x-auto rounded-lg bg-white border border-gray-200">
                 <table className="w-full min-w-[900px] border-collapse text-center text-sm">
-                  <thead className="bg-[#e5e5e5] text-sm font-semibold text-gray-800 border-b border-gray-200">
+                  <thead className="bg-[#e5e5e5] text-xs font-medium text-gray-800 border-b border-gray-200">
                     <tr>
                       <th className="px-3 py-3 border-r border-gray-200">
                         Sl No

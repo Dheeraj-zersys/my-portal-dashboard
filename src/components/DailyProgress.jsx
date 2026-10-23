@@ -71,7 +71,7 @@ export default function DprModule() {
 
           <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-sm border border-gray-300">
+              <table className="w-full text-left border-collapse text-sm ">
                 <thead>
                   <tr className="bg-[#e5e5e5] text-xs font-semibold text-gray-800 border-b border-gray-300 text-center">
                     <th className="p-3 border-r border-gray-300" rowSpan="2">
