@@ -8,7 +8,6 @@ import BUManagerContent from "./components/MasterData/BUManagerContent";
 import DailyProgressReport from "./components/DailyProgress";
 import { useSelector } from "react-redux";
 import { Bell, LogOut, Menu } from "lucide-react";
-import { BiBellPlus } from "react-icons/bi";
 
 function DashboardApp({ email, setIsLoggedIn }) {
   const activeItem = useSelector((state) => state.navigation.activeItem);
@@ -73,7 +72,7 @@ function DashboardApp({ email, setIsLoggedIn }) {
                       {email || "xyz@example.com"}
                     </p>
                     <span className="inline-block mt-1.5 px-2.5 py-0.5 text-xs text-[#11733f] border border-[#11733f] rounded-full font-medium">
-                      Super Admin
+                      Admin
                     </span>
                   </div>
                 </div>
@@ -81,7 +80,7 @@ function DashboardApp({ email, setIsLoggedIn }) {
                 <button
                   type="button"
                   onClick={() => setIsLoggedIn(false)}
-                  className="w-full mt-3 flex items-center gap-2.5 text-left text-sm text-gray-700 hover:text-gray-900 py-2 rounded transition"
+                  className="w-full mt-3 flex items-center gap-2.5 text-left font-medium text-sm text-gray-400 hover:text-gray-900 py-2 rounded transition"
                 >
                   <LogOut size={16} />
                   <span>Logout</span>
