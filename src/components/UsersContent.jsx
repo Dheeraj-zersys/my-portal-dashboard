@@ -229,9 +229,10 @@ const UsersContent = () => {
                 <button
                   type="button"
                   onClick={closeForm}
-                  className="border rounded-md pr-4 pl-4 pt-2 pb-2 px-3 py-1.5 text-sm text-gray-900 hover:bg-white"
+                  className="flex items-center gap-1.5 rounded-lg border border-gray-700 bg-white px-4 py-2 text-sm font-medium text-gray-800 shadow-sm hover:bg-gray-50 transition"
                 >
-                  Back <ChevronLeft size={15} aria-hidden="true" />
+                  <ChevronLeft size={16} aria-hidden="true" />
+                  <span>Back</span>
                 </button>
               </div>
               <form

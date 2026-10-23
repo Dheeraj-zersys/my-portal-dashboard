@@ -177,9 +177,10 @@ const BusinessPlanContentView = () => {
                 <button
                   type="button"
                   onClick={closeForm}
-                  className="rounded border border-gray-600 px-5 py-3 text-sm text-gray-700 hover:bg-white"
+                  className="flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-800 shadow-sm hover:bg-gray-50 transition"
                 >
-                  <ChevronLeft size={15} aria-hidden="true" /> Back
+                  <ChevronLeft size={16} aria-hidden="true" />
+                  <span>Back</span>
                 </button>
               </div>
               <form
@@ -314,36 +315,70 @@ const BusinessPlanContentView = () => {
                 </div>
               </div>
 
-              <div className="overflow-x-auto rounded-lg bg-white">
+              <div className="overflow-x-auto rounded-lg bg-white border border-gray-200 shadow-sm">
                 <table className="w-full min-w-[900px] border-collapse text-center text-sm">
-                  <thead className="bg-[#e5e5e5] text-sm font-semibold text-gray-800">
+                  <thead className="bg-[#e5e5e5] text-sm font-semibold text-gray-800 border-b border-gray-200">
                     <tr>
-                      <th className="px-3 py-3">Sl No</th>
-                      <th className="px-3 py-3">Entity Name</th>
-                      <th className="px-3 py-3">GA Name</th>
-                      <th className="px-3 py-3">District</th>
-                      <th className="px-3 py-3">Date</th>
-                      <th className="px-3 py-3">Transport</th>
-                      <th className="px-3 py-3">Industrial PNG</th>
-                      <th className="px-3 py-3">Commercial</th>
-                      <th className="px-3 py-3">Domestic</th>
+                      <th className="px-3 py-3 border-r border-gray-200">
+                        Sl No
+                      </th>
+                      <th className="px-3 py-3 border-r border-gray-200">
+                        Entity Name
+                      </th>
+                      <th className="px-3 py-3 border-r border-gray-200">
+                        GA Name
+                      </th>
+                      <th className="px-3 py-3 border-r border-gray-200">
+                        District
+                      </th>
+                      <th className="px-3 py-3 border-r border-gray-200">
+                        Date
+                      </th>
+                      <th className="px-3 py-3 border-r border-gray-200">
+                        Transport
+                      </th>
+                      <th className="px-3 py-3 border-r border-gray-200">
+                        Industrial PNG
+                      </th>
+                      <th className="px-3 py-3 border-r border-gray-200">
+                        Commercial
+                      </th>
+                      <th className="px-3 py-3 border-r border-gray-200">
+                        Domestic
+                      </th>
                       <th className="px-3 py-3 text-center">Action</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 text-gray-800">
                     {visiblePlans.map((plan, index) => (
                       <tr key={plan.id} className="hover:bg-gray-50">
-                        <td className="px-3 py-3">
+                        <td className="px-3 py-3 border-r border-gray-200">
                           {(page - 1) * pageSize + index + 1}
                         </td>
-                        <td className="px-3 py-3">{plan.entityName}</td>
-                        <td className="px-3 py-3">{plan.gaName}</td>
-                        <td className="px-3 py-3">{plan.district}</td>
-                        <td className="px-3 py-3">{formatDate(plan.date)}</td>
-                        <td className="px-3 py-3">{plan.transport}</td>
-                        <td className="px-3 py-3">{plan.industrialMarket}</td>
-                        <td className="px-3 py-3">{plan.commercial}</td>
-                        <td className="px-3 py-3">{plan.domestic}</td>
+                        <td className="px-3 py-3 border-r border-gray-200">
+                          {plan.entityName}
+                        </td>
+                        <td className="px-3 py-3 border-r border-gray-200">
+                          {plan.gaName}
+                        </td>
+                        <td className="px-3 py-3 border-r border-gray-200">
+                          {plan.district}
+                        </td>
+                        <td className="px-3 py-3 border-r border-gray-200">
+                          {formatDate(plan.date)}
+                        </td>
+                        <td className="px-3 py-3 border-r border-gray-200">
+                          {plan.transport}
+                        </td>
+                        <td className="px-3 py-3 border-r border-gray-200">
+                          {plan.industrialMarket}
+                        </td>
+                        <td className="px-3 py-3 border-r border-gray-200">
+                          {plan.commercial}
+                        </td>
+                        <td className="px-3 py-3 border-r border-gray-200">
+                          {plan.domestic}
+                        </td>
                         <td className="px-3 py-3 text-center">
                           <button
                             type="button"
@@ -368,7 +403,7 @@ const BusinessPlanContentView = () => {
                     )}
                   </tbody>
                 </table>
-                <div className="flex flex-col gap-3 px-5 py-4 text-xs text-gray-400 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-col gap-3 px-5 py-4 text-xs text-gray-400 sm:flex-row sm:items-center sm:justify-between border-t border-gray-200">
                   <span>
                     Showing{" "}
                     {filteredPlans.length ? (page - 1) * pageSize + 1 : 0} to{" "}
