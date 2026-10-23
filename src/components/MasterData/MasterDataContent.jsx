@@ -69,18 +69,55 @@ const MasterDataContent = ({
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [form, setForm] = useState({ ...emptyForm });
   const [formError, setFormError] = useState("");
+  const [selectedGaNameFilter, setSelectedGaNameFilter] = useState(null);
+  const [selectedStateFilter, setSelectedStateFilter] = useState(null);
+  const [selectedDistrictFilter, setSelectedDistrictFilter] = useState(null);
 
   const filteredManagers = useMemo(() => {
-    const search = query.trim().toLowerCase();
-    if (!search) return managers;
-    return managers.filter((manager) =>
-      Object.values(manager).some((value) =>
-        (Array.isArray(value) ? value.join(" ") : String(value ?? ""))
-          .toLowerCase()
-          .includes(search),
-      ),
-    );
-  }, [managers, query]);
+    return managers.filter((manager) => {
+      const search = query.trim().toLowerCase();
+      if (search) {
+        const matchesGlobal = Object.values(manager).some((value) =>
+          (Array.isArray(value) ? value.join(" ") : String(value ?? ""))
+            .toLowerCase()
+            .includes(search),
+        );
+        if (!matchesGlobal) return false;
+      }
+
+      if (isGA) {
+        if (
+          selectedGaNameFilter &&
+          manager.name !== selectedGaNameFilter.value
+        ) {
+          return false;
+        }
+        if (
+          selectedStateFilter &&
+          manager.state !== selectedStateFilter.value
+        ) {
+          return false;
+        }
+        if (selectedDistrictFilter) {
+          const hasDistrict = manager.districts?.some(
+            (d) =>
+              d.toLowerCase() === selectedDistrictFilter.value.toLowerCase(),
+          );
+          if (!hasDistrict) return false;
+        }
+      }
+
+      return true;
+    });
+  }, [
+    managers,
+    query,
+    isGA,
+    selectedGaNameFilter,
+    selectedStateFilter,
+    selectedDistrictFilter,
+  ]);
+
   const pageCount = Math.max(1, Math.ceil(filteredManagers.length / pageSize));
   const visibleManagers = filteredManagers.slice(
     (page - 1) * pageSize,
@@ -162,6 +199,56 @@ const MasterDataContent = ({
     }));
   };
 
+  const gaNameOptions = useMemo(
+    () =>
+      Array.from(new Set(managers.map((m) => m.name))).map((name) => ({
+        value: name,
+        label: name,
+      })),
+    [managers],
+  );
+
+  const stateOptions = useMemo(
+    () =>
+      Object.keys(states).map((st) => ({
+        value: st,
+        label: st,
+      })),
+    [],
+  );
+
+  const districtOptions = useMemo(() => {
+    const list = selectedStateFilter
+      ? states[selectedStateFilter.value] || []
+      : Object.values(states).flat();
+    return Array.from(new Set(list)).map((d) => ({
+      value: d,
+      label: d,
+    }));
+  }, [selectedStateFilter]);
+
+  const customSelectStyles = {
+    control: (provided) => ({
+      ...provided,
+      borderColor: "#e5e7eb",
+      boxShadow: "none",
+      minHeight: "38px",
+      borderRadius: "0.375rem",
+      backgroundColor: "#ffffff",
+      "&:hover": { borderColor: "#047857" },
+    }),
+    placeholder: (provided) => ({
+      ...provided,
+      color: "#9ca3af",
+      fontSize: "0.875rem",
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: "#1f2937",
+      fontSize: "0.875rem",
+    }),
+  };
+
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-[#f8f8f9]">
       <section className="flex-1 p-5 sm:p-8">
@@ -196,46 +283,99 @@ const MasterDataContent = ({
             </div>
           </div>
 
+          {isGA && (
+            <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <Select
+                value={selectedGaNameFilter}
+                onChange={(option) => {
+                  setSelectedGaNameFilter(option);
+                  setPage(1);
+                }}
+                options={gaNameOptions}
+                placeholder="GA Name"
+                isClearable
+                styles={customSelectStyles}
+              />
+              <Select
+                value={selectedStateFilter}
+                onChange={(option) => {
+                  setSelectedStateFilter(option);
+                  setSelectedDistrictFilter(null);
+                  setPage(1);
+                }}
+                options={stateOptions}
+                placeholder="Select State"
+                isClearable
+                styles={customSelectStyles}
+              />
+              <Select
+                value={selectedDistrictFilter}
+                onChange={(option) => {
+                  setSelectedDistrictFilter(option);
+                  setPage(1);
+                }}
+                options={districtOptions}
+                placeholder="Select District"
+                isClearable
+                styles={customSelectStyles}
+              />
+            </div>
+          )}
+
           <div className="overflow-x-auto rounded-lg bg-white shadow-sm">
-            <table className="w-full min-w-[640px] border-collapse text-left text-sm">
+            <table className="w-full min-w-[640px] border-collapse text-center text-sm">
               <thead className="bg-[#e5e5e5] text-xs font-semibold text-gray-800">
                 <tr>
-                  <th className="px-4 py-3">Sl No</th>
-                  <th className="px-4 py-3">{entity} Name</th>
+                  <th className="px-4 py-3 border-r border-gray-200">Sl No</th>
+                  <th className="px-4 py-3 border-r border-gray-200">
+                    {entity} Name
+                  </th>
                   {isGA && (
                     <>
-                      <th className="px-4 py-3">State</th>
-                      <th className="px-4 py-3">Districts</th>
+                      <th className="px-4 py-3 border-r border-gray-200">
+                        State
+                      </th>
+                      <th className="px-4 py-3 border-r border-gray-200">
+                        Districts
+                      </th>
                     </>
                   )}
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3">Created Date</th>
+                  <th className="px-4 py-3 border-r border-gray-200">Status</th>
+                  <th className="px-4 py-3 border-r border-gray-200">
+                    Created Date
+                  </th>
                   <th className="px-4 py-3 text-center">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 text-gray-800">
                 {visibleManagers.map((manager, index) => (
                   <tr key={manager.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 border-r border-gray-200">
                       {(page - 1) * pageSize + index + 1}
                     </td>
-                    <td className="px-4 py-3">{manager.name}</td>
+                    <td className="px-4 py-3 border-r border-gray-200">
+                      {manager.name}
+                    </td>
                     {isGA && (
                       <>
-                        <td className="px-4 py-3">{manager.state}</td>
-                        <td className="px-4 py-3">
+                        <td className="px-4 py-3 border-r border-gray-200">
+                          {manager.state}
+                        </td>
+                        <td className="px-4 py-3 border-r border-gray-200">
                           {manager.districts?.join(", ")}
                         </td>
                       </>
                     )}
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 border-r border-gray-200">
                       <span
                         className={`rounded-full px-2.5 py-1 text-xs font-semibold text-white ${manager.status === "Active" ? "bg-green-500" : "bg-gray-400"}`}
                       >
                         {manager.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3">{manager.createdDate}</td>
+                    <td className="px-4 py-3 border-r border-gray-200">
+                      {manager.createdDate}
+                    </td>
                     <td className="px-4 py-3 text-center">
                       <button
                         type="button"

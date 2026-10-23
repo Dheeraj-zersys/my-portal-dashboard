@@ -177,7 +177,7 @@ const BusinessPlanContentView = () => {
                 <button
                   type="button"
                   onClick={closeForm}
-                  className="flex items-center gap-1.5 rounded-lg border border-gray-600 bg-white px-4 py-2 text-sm font-medium text-gray-800 shadow-sm hover:bg-gray-50 transition"
+                  className="flex items-center gap-1.5 rounded-lg border border-gray-600 bg-white px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-50 transition"
                 >
                   <ChevronLeft size={16} aria-hidden="true" />
                   <span>Back</span>
@@ -185,7 +185,7 @@ const BusinessPlanContentView = () => {
               </div>
               <form
                 onSubmit={savePlan}
-                className="rounded-lg bg-white p-4 sm:p-5 shadow-sm"
+                className="rounded-lg bg-white p-4 sm:p-5"
               >
                 <div className="grid border-b border-gray-200 pb-4 gap-6 sm:grid-cols-3">
                   <label className="flex min-w-0 items-center text-base font-medium text-gray-800">
@@ -315,7 +315,7 @@ const BusinessPlanContentView = () => {
                 </div>
               </div>
 
-              <div className="overflow-x-auto rounded-lg bg-white border border-gray-200 shadow-sm">
+              <div className="overflow-x-auto rounded-lg bg-white border border-gray-200">
                 <table className="w-full min-w-[900px] border-collapse text-center text-sm">
                   <thead className="bg-[#e5e5e5] text-sm font-semibold text-gray-800 border-b border-gray-200">
                     <tr>

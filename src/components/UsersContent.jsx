@@ -229,7 +229,7 @@ const UsersContent = () => {
                 <button
                   type="button"
                   onClick={closeForm}
-                  className="flex items-center gap-1.5 rounded-lg border border-gray-700 bg-white px-4 py-2 text-sm font-medium text-gray-800 shadow-sm hover:bg-gray-50 transition"
+                  className="flex items-center gap-1.5 rounded-lg border border-gray-700 bg-white px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-50 transition"
                 >
                   <ChevronLeft size={16} aria-hidden="true" />
                   <span>Back</span>
@@ -237,7 +237,7 @@ const UsersContent = () => {
               </div>
               <form
                 onSubmit={saveUser}
-                className="rounded-lg bg-white p-5 shadow-sm sm:p-7"
+                className="rounded-lg bg-white p-5 sm:p-7"
               >
                 <div className="grid gap-x-6 gap-y-4 sm:grid-cols-2">
                   <label className={labelClass}>
@@ -437,7 +437,7 @@ const UsersContent = () => {
               </div>
 
               <div className="overflow-x-auto rounded-lg bg-white border border-gray-200">
-                <table className="w-full min-w-[760px] border-collapse text-left text-sm">
+                <table className="w-full min-w-[760px] border-collapse text-center text-sm">
                   <thead className="bg-[#e5e5e5] text-xs font-semibold text-gray-900 border-b border-gray-200">
                     <tr>
                       <th className="px-4 py-3 border-r border-gray-200">
