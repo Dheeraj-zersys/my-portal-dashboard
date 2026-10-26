@@ -1,7 +1,7 @@
 # Backend → Frontend Integration Guide
 
-The backend is complete and the existing UI already runs inside it: login, logout, the layout and
-sidebar navigation are wired up. Each screen still renders its **mock data** (seed arrays, Redux,
+The backend is complete and the existing UI already runs inside it: authentication (login, logout,
+forgot and reset password), the layout and sidebar navigation are wired up. Each screen still renders its **mock data** (seed arrays, Redux,
 localStorage). Integration means replacing that mock data with the Inertia props and form posts
 described here.
 
@@ -45,9 +45,9 @@ Sample users, plans and DPRs are only seeded outside production.
 | `GET /login` (`login`) | `auth/Login` | wired (`pages/auth/Login.jsx`) | `status` |
 | `POST /login` | – | | body: `email`, `password`, `rememberMe` |
 | `POST /logout` (`logout`) | – | wired (`layouts/AppLayout.jsx`) | |
-| `GET /forgot-password` (`password.request`) | `auth/ForgotPassword` | placeholder; mock flow lives in `pages/auth/Login.jsx` | `status` |
+| `GET /forgot-password` (`password.request`) | `auth/ForgotPassword` | wired (`pages/auth/ForgotPassword.jsx`) | `status` |
 | `POST /forgot-password` (`password.email`) | – | | body: `email` |
-| `GET /reset-password/{token}` (`password.reset`) | `auth/ResetPassword` | placeholder | `token`, `email` |
+| `GET /reset-password/{token}` (`password.reset`) | `auth/ResetPassword` | wired (`pages/auth/ResetPassword.jsx`) | `token`, `email` |
 | `POST /reset-password` (`password.store`) | – | | body: `token`, `email`, `password`, `password_confirmation` |
 | `GET /dashboard` (`dashboard`) | `Dashboard` | `DashboardContent.jsx` | `stats` (same shape as `dashboardSlice`) |
 | `GET /users` | `users/Index` | `UsersContent.jsx` | `users`, `filters`, `options.{roles,statuses,businessUnits,geographicalAreas}` |
@@ -111,9 +111,10 @@ export default function UsersIndex({ users, filters, options }) {
 
 ## Behaviour changes vs. the current mock UI
 
-- **Password reset is token-based.** The mock "set-password" screen resets by email alone, which is
-  insecure. The backend emails a link to `/reset-password/{token}`. With `MAIL_MAILER=log` the link is
-  written to `storage/logs/laravel.log`.
+- **Password reset is token-based.** The old mock reset a password with just an email address. Now
+  "Forgot Password" emails a link to `/reset-password/{token}` (valid 60 minutes), which opens the set-password
+  screen. Locally `MAIL_MAILER=log`, so the email (and link) is written to `storage/logs/laravel.log`;
+  set the `MAIL_*` values in `.env` to send real email.
 - **Inactive users cannot log in.** Login is throttled to 5 attempts per minute.
 - **Business plan districts must belong to the chosen GA**, and GA districts must belong to the chosen state.
 - **No delete endpoints**, matching the UI. Records are deactivated through `status`.

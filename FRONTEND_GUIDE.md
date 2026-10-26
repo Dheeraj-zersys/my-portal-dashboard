@@ -1,9 +1,11 @@
 # Frontend Integration: Getting Started
 
-This is one Laravel app with the React UI served through Inertia. Every screen
-you built is already in place and reachable: login, the layout and sidebar navigation are wired to the
-backend. What's left is the data. Each screen still runs on its mock data (seed arrays, Redux,
-localStorage), and your job is to replace that with the real create / view / edit / delete flows.
+This is one Laravel app with the React UI served through Inertia. Every screen you built is already
+in place and reachable. Authentication (login, logout, forgot and reset password), the layout and
+sidebar navigation are wired to the backend. What's left is the data. Each screen still runs on its
+mock data (seed arrays, Redux, localStorage), and your job is to replace that with the real
+create / view / edit / delete flows.
+
 This guide covers direction and constraints. Routes, props and payloads are in [`INTEGRATION.md`](INTEGRATION.md).
 
 ## Get running
@@ -30,7 +32,6 @@ Keep `npm run dev` running, and log in with the seeded admin account.
 4. **Daily Progress Report.** The backend has separate create, edit and preview routes. Today the
    screen switches between those views internally. Decide whether to split it across the
    `Form` / `Show` pages (currently placeholders) or keep one page, but use the routes either way.
-5. **Forgot / reset password.** The mock flow is still inside the login page.
 
 Finish one screen completely (definition of done below) before starting the next.
 
@@ -48,9 +49,6 @@ Finish one screen completely (definition of done below) before starting the next
 
 ## Known gaps
 
-- **Password reset.** The mock "set password" screen resets a password using only an email address.
-  The backend uses an emailed token link instead, so that flow changes shape. See *Behaviour changes*
-  in `INTEGRATION.md`.
 - **Office 365.** The "LogIn With Office 365" button has no backend, so it does nothing.
 - **Lint.** `npm run lint` reports a few unused-variable errors that came over with the existing code.
 
