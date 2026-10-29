@@ -21,6 +21,7 @@ export default function DprModule() {
     const [searchTerm, setSearchTerm] = useState("");
     const [pageSize, setPageSize] = useState(5);
     const [currentPage, setCurrentPage] = useState(1);
+    const [selectedReportId, setSelectedReportId] = useState(null);
 
     const filteredReports = reports.filter((rep) => {
         const term = searchTerm.toLowerCase();
@@ -46,6 +47,11 @@ export default function DprModule() {
         startIndex,
         startIndex + pageSize,
     );
+
+    // Determine data source for preview: active formData during wizard vs specific saved report from list
+    const activeReport = selectedReportId
+        ? reports.find((r) => r.id === selectedReportId) || formData
+        : formData;
 
     const inputClassName =
         "w-full bg-gray-50/50 border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-emerald-600 focus:border-emerald-600 transition-colors";
@@ -77,7 +83,10 @@ export default function DprModule() {
                                 />
                             </div>
                             <button
-                                onClick={() => dispatch(startAddDpr())}
+                                onClick={() => {
+                                    setSelectedReportId(null);
+                                    dispatch(startAddDpr());
+                                }}
                                 className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-md font-medium text-sm flex items-center gap-2 transition-colors"
                             >
                                 + Add DPR
@@ -183,24 +192,32 @@ export default function DprModule() {
                                             </td>
                                             <td className="p-3 flex items-center gap-3">
                                                 <button
-                                                    onClick={() =>
+                                                    onClick={() => {
+                                                        setSelectedReportId(
+                                                            rep.id,
+                                                        );
                                                         dispatch(
-                                                            setView("preview"),
-                                                        )
-                                                    }
+                                                            setView(
+                                                                "previewPart1",
+                                                            ),
+                                                        );
+                                                    }}
                                                     className="text-emerald-600 hover:text-emerald-800 bg-emerald-50 p-1.5 rounded"
                                                     title="Preview"
                                                 >
                                                     <Eye className="w-4 h-4" />
                                                 </button>
                                                 <button
-                                                    onClick={() =>
+                                                    onClick={() => {
+                                                        setSelectedReportId(
+                                                            rep.id,
+                                                        );
                                                         dispatch(
                                                             startEditDpr(
                                                                 rep.id,
                                                             ),
-                                                        )
-                                                    }
+                                                        );
+                                                    }}
                                                     className="text-emerald-600 hover:text-emerald-800 bg-emerald-50 p-1.5 rounded"
                                                     title="Edit"
                                                 >
@@ -1034,9 +1051,10 @@ export default function DprModule() {
                                 </button>
                             ) : (
                                 <button
-                                    onClick={() =>
-                                        dispatch(setView("previewPart1"))
-                                    }
+                                    onClick={() => {
+                                        setSelectedReportId(null);
+                                        dispatch(setView("previewPart1"));
+                                    }}
                                     className="bg-emerald-700 hover:bg-emerald-800 text-white px-5 py-2 rounded text-sm font-medium transition-colors ml-auto"
                                 >
                                     Preview Sales
@@ -1055,7 +1073,13 @@ export default function DprModule() {
                             Preview
                         </h2>
                         <button
-                            onClick={() => dispatch(setView("wizard"))}
+                            onClick={() =>
+                                dispatch(
+                                    setView(
+                                        selectedReportId ? "list" : "wizard",
+                                    ),
+                                )
+                            }
                             className="flex items-center gap-1.5 rounded-lg border border-gray-600 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition"
                         >
                             <ChevronLeft size={16} aria-hidden="true" />
@@ -1063,7 +1087,7 @@ export default function DprModule() {
                         </button>
                     </div>
                     <div className="text-center font-semibold text-xs text-gray-700 mb-4">
-                        Date: {formData.date}
+                        Date: {activeReport.date}
                     </div>
                     <div className="overflow-x-auto border border-gray-200 rounded">
                         <table className="w-full text-xs text-left border-collapse border border-gray-300">
@@ -1113,7 +1137,7 @@ export default function DprModule() {
                                         Registration
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.domesticReg}
+                                        {activeReport.domesticReg}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1131,7 +1155,7 @@ export default function DprModule() {
                                         Last Mile Connectivity
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.domesticLmc}
+                                        {activeReport.domesticLmc}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1149,7 +1173,7 @@ export default function DprModule() {
                                         Commissioned
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.domesticCom}
+                                        {activeReport.domesticCom}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1179,7 +1203,7 @@ export default function DprModule() {
                                         Registration
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.commercialReg}
+                                        {activeReport.commercialReg}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1197,7 +1221,7 @@ export default function DprModule() {
                                         Last Mile Connectivity
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.commercialLmc || "-"}
+                                        {activeReport.commercialLmc || "-"}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1227,7 +1251,7 @@ export default function DprModule() {
                                         Registration
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.industrialReg}
+                                        {activeReport.industrialReg}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1245,7 +1269,7 @@ export default function DprModule() {
                                         Last Mile Connectivity
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.industrialLmc || "-"}
+                                        {activeReport.industrialLmc || "-"}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1275,7 +1299,7 @@ export default function DprModule() {
                                         OMC Final PESO Applied
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.omcApplied}
+                                        {activeReport.omcApplied}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1293,7 +1317,7 @@ export default function DprModule() {
                                         Commissioned
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.omcCom}
+                                        {activeReport.omcCom}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1311,7 +1335,7 @@ export default function DprModule() {
                                         COCO/CODO Final PESO Applied
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.cocoApplied}
+                                        {activeReport.cocoApplied}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1329,7 +1353,7 @@ export default function DprModule() {
                                         Commissioned
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.cocoCom}
+                                        {activeReport.cocoCom}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1359,7 +1383,7 @@ export default function DprModule() {
                                         OEM
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.oem}
+                                        {activeReport.oem}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1377,7 +1401,7 @@ export default function DprModule() {
                                         Conversion
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.conversion}
+                                        {activeReport.conversion}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1425,7 +1449,7 @@ export default function DprModule() {
                                         Laid
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.mdpeLaid}
+                                        {activeReport.mdpeLaid}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1443,7 +1467,7 @@ export default function DprModule() {
                                         Commissioned
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.mdpeCom}
+                                        {activeReport.mdpeCom}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1461,7 +1485,7 @@ export default function DprModule() {
                                         Laid - 20mm
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.mdpe20Laid}
+                                        {activeReport.mdpe20Laid}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1479,7 +1503,7 @@ export default function DprModule() {
                                         Commissioned-20mm
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.mdpe20Com}
+                                        {activeReport.mdpe20Com}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1509,7 +1533,7 @@ export default function DprModule() {
                                         Stringing
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.steelStringing}
+                                        {activeReport.steelStringing}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1527,7 +1551,7 @@ export default function DprModule() {
                                         Commissioned
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.steelCom}
+                                        {activeReport.steelCom}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1557,7 +1581,7 @@ export default function DprModule() {
                                         Stringing
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.steelInchStringing}
+                                        {activeReport.steelInchStringing}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1575,7 +1599,7 @@ export default function DprModule() {
                                         Commissioned
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.steelInchCom}
+                                        {activeReport.steelInchCom}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1605,7 +1629,7 @@ export default function DprModule() {
                                         With Steel Pipeline (kms.)
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.ofcPipeline}
+                                        {activeReport.ofcPipeline}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1623,7 +1647,7 @@ export default function DprModule() {
                                         With MDPE (kms.)
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.ofcMdpe}
+                                        {activeReport.ofcMdpe}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1666,7 +1690,7 @@ export default function DprModule() {
                         </button>
                     </div>
                     <div className="text-center font-semibold text-xs text-gray-700 mb-4">
-                        Date: {formData.date}
+                        Date: {activeReport.date}
                     </div>
                     <div className="overflow-x-auto border border-gray-200 rounded">
                         <table className="w-full text-xs text-left border-collapse border border-gray-300">
@@ -1707,7 +1731,7 @@ export default function DprModule() {
                                         PNG Domestic Sales (SCM)
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.pngDomestic}
+                                        {activeReport.pngDomestic}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1731,7 +1755,7 @@ export default function DprModule() {
                                         PNG Commercial Sales (SCM)
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.pngCommercial}
+                                        {activeReport.pngCommercial}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1755,7 +1779,7 @@ export default function DprModule() {
                                         PNG Industrial Sales
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.pngIndustrial}
+                                        {activeReport.pngIndustrial}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1779,7 +1803,7 @@ export default function DprModule() {
                                         CNG Sales
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.cngSales}
+                                        {activeReport.cngSales}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1803,7 +1827,7 @@ export default function DprModule() {
                                         Direct LNG Sales
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.directLng}
+                                        {activeReport.directLng}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1827,7 +1851,7 @@ export default function DprModule() {
                                         Compression Services
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.compressionServices}
+                                        {activeReport.compressionServices}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1851,7 +1875,7 @@ export default function DprModule() {
                                         For AG&PGA
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.forAggPga}
+                                        {activeReport.forAggPga}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1875,7 +1899,7 @@ export default function DprModule() {
                                         For Others
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
-                                        {formData.forOthers}
+                                        {activeReport.forOthers}
                                     </td>
                                     <td className="p-2 border-r border-gray-300">
                                         -
@@ -1896,175 +1920,17 @@ export default function DprModule() {
                     </div>
                     <div className="flex justify-end mt-6">
                         <button
-                            onClick={() => dispatch(saveDpr())}
+                            onClick={() => {
+                                if (selectedReportId) {
+                                    setSelectedReportId(null);
+                                    dispatch(setView("list"));
+                                } else {
+                                    dispatch(saveDpr());
+                                }
+                            }}
                             className="bg-emerald-700 hover:bg-emerald-800 text-white px-5 py-2 rounded text-sm font-medium"
                         >
-                            Submit
-                        </button>
-                    </div>
-                </div>
-            )}
-
-            {/* SINGLE VIEW PREVIEW FALLBACK */}
-            {view === "preview" && (
-                <div className="bg-white rounded-lg border border-gray-200 p-6 max-w-5xl mx-auto">
-                    <div className="flex justify-between items-center mb-4 border-b pb-3">
-                        <h2 className="text-lg font-bold text-gray-800">
-                            Preview DPR Report
-                        </h2>
-                        <button
-                            onClick={() => dispatch(setView("list"))}
-                            className="flex items-center gap-1.5 rounded-lg border border-gray-600 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition"
-                        >
-                            <ChevronLeft size={16} aria-hidden="true" />
-                            Back
-                        </button>
-                    </div>
-                    <div className="text-center font-semibold text-sm text-gray-700 mb-4">
-                        Date: {formData.date}
-                    </div>
-                    <div className="overflow-x-auto border border-gray-200 rounded">
-                        <table className="w-full text-xs text-left border-collapse border border-gray-300">
-                            <thead>
-                                <tr className="bg-gray-100 border-b border-gray-300">
-                                    <th className="p-2 border-r border-gray-300">
-                                        Infrastructure
-                                    </th>
-                                    <th className="p-2 border-r border-gray-300">
-                                        For the Day
-                                    </th>
-                                    <th className="p-2 border-r border-gray-300">
-                                        Cumulative for the Month
-                                    </th>
-                                    <th className="p-2 border-r border-gray-300">
-                                        Cumulative CY 2025
-                                    </th>
-                                    <th className="p-2 border-r border-gray-300">
-                                        Cumulative CY 2024
-                                    </th>
-                                    <th className="p-2">
-                                        Cumulative till Dec 2023
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr className="border-b border-gray-300">
-                                    <td className="p-2 border-r border-gray-300 font-medium">
-                                        Domestic Lmc
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        {formData.domesticLmc}
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        -
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        -
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        -
-                                    </td>
-                                    <td className="p-2">-</td>
-                                </tr>
-                                <tr className="border-b border-gray-300">
-                                    <td className="p-2 border-r border-gray-300 font-medium">
-                                        Commercial Commissioned
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        {formData.commercialCom}
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        -
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        -
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        -
-                                    </td>
-                                    <td className="p-2">-</td>
-                                </tr>
-                                <tr className="border-b border-gray-300">
-                                    <td className="p-2 border-r border-gray-300 font-medium">
-                                        Industrial Commissioned
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        {formData.industrialCom}
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        -
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        -
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        -
-                                    </td>
-                                    <td className="p-2">-</td>
-                                </tr>
-                                <tr className="border-b border-gray-300">
-                                    <td className="p-2 border-r border-gray-300 font-medium">
-                                        CNG Station (OMC)
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        {formData.omcCom}
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        -
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        -
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        -
-                                    </td>
-                                    <td className="p-2">-</td>
-                                </tr>
-                                <tr className="border-b border-gray-300">
-                                    <td className="p-2 border-r border-gray-300 font-medium">
-                                        MDPE Laid (Km)
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        {formData.mdpeLaid}
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        -
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        -
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        -
-                                    </td>
-                                    <td className="p-2">-</td>
-                                </tr>
-                                <tr>
-                                    <td className="p-2 border-r border-gray-300 font-medium">
-                                        CNG Sales (SCM)
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        {formData.cngSales}
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        -
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        -
-                                    </td>
-                                    <td className="p-2 border-r border-gray-300">
-                                        -
-                                    </td>
-                                    <td className="p-2">-</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div className="flex justify-end mt-6">
-                        <button
-                            onClick={() => dispatch(saveDpr())}
-                            className="bg-emerald-700 hover:bg-emerald-800 text-white px-5 py-2 rounded text-sm font-medium"
-                        >
-                            Submit Report
+                            {selectedReportId ? "Back to List" : "Submit"}
                         </button>
                     </div>
                 </div>
