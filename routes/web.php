@@ -7,6 +7,7 @@ use App\Http\Controllers\BusinessPlanController;
 use App\Http\Controllers\DailyProgressReportController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MasterData\BusinessUnitController;
+use App\Http\Controllers\MasterData\EntityController;
 use App\Http\Controllers\MasterData\GeographicalAreaController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\EnsureActiveUser;
@@ -33,6 +34,7 @@ Route::middleware(['auth', EnsureActiveUser::class])->group(function () {
     Route::resource('daily-progress-reports', DailyProgressReportController::class)->except(['destroy']);
 
     Route::prefix('master-data')->name('master-data.')->group(function () {
+        Route::resource('entities', EntityController::class)->only(['index', 'store', 'update']);
         Route::resource('geographical-areas', GeographicalAreaController::class)->only(['index', 'store', 'update']);
         Route::resource('business-units', BusinessUnitController::class)->only(['index', 'store', 'update']);
     });

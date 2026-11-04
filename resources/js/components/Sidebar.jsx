@@ -15,6 +15,7 @@ const navItems = [
     ["Daily Progress Report", FiFileText, "/daily-progress-reports"],
 ];
 const subItems = [
+    ["Entities", "/master-data/entities"],
     ["Geographical Areas", "/master-data/geographical-areas"],
     ["Business Units", "/master-data/business-units"],
 ];

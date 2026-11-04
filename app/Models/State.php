@@ -23,4 +23,9 @@ class State extends Model
     {
         return $this->hasMany(GeographicalArea::class);
     }
+
+    public function entities(): HasMany
+    {
+        return $this->hasMany(Entity::class);
+    }
 }

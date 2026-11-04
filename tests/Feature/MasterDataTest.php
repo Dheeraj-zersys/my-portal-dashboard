@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\BusinessUnit;
 use App\Models\District;
+use App\Models\Entity;
 use App\Models\GeographicalArea;
 use App\Models\State;
 use App\Models\User;
@@ -14,6 +15,112 @@ use Tests\TestCase;
 class MasterDataTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function test_entities_index_renders_filtered_entities_and_state_options(): void
+    {
+        $state = State::factory()->create(['name' => 'Karnataka']);
+        Entity::factory()->for($state)->create([
+            'entity_code' => 'ENT-100',
+            'name' => 'North Gas',
+        ]);
+        Entity::factory()->for($state)->create([
+            'entity_code' => 'ENT-200',
+            'name' => 'South Gas',
+        ]);
+
+        $this->actingAs(User::factory()->create())
+            ->get('/master-data/entities?search=ENT-100')
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('master-data/Entities')
+                ->has('managers.data', 1)
+                ->where('managers.data.0.entityCode', 'ENT-100')
+                ->where('managers.data.0.state', 'Karnataka')
+                ->where('filters.search', 'ENT-100')
+                ->has('options.states', 1)
+                ->where('options.states.0.label', 'Karnataka')
+            );
+    }
+
+    public function test_guest_cannot_view_entities_manager(): void
+    {
+        $this->get('/master-data/entities')
+            ->assertRedirect(route('login'));
+    }
+
+    public function test_entity_can_be_created_with_active_status(): void
+    {
+        $state = State::factory()->create();
+
+        $this->actingAs(User::factory()->create())
+            ->post('/master-data/entities', [
+                'entityCode' => 'ENT-100',
+                'name' => 'North Gas',
+                'stateId' => $state->id,
+                'gstin' => 'GST-100',
+            ])
+            ->assertSessionHasNoErrors();
+
+        $entity = Entity::where('entity_code', 'ENT-100')->firstOrFail();
+        $this->assertSame($state->id, $entity->state_id);
+        $this->assertSame('North Gas', $entity->name);
+        $this->assertSame('GST-100', $entity->gstin);
+        $this->assertSame('Active', $entity->status->value);
+    }
+
+    public function test_entity_creation_requires_code_name_and_valid_state(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->post('/master-data/entities', [
+                'name' => 'North Gas',
+                'stateId' => 9999,
+            ])
+            ->assertSessionHasErrors(['entityCode', 'stateId']);
+
+        $this->assertDatabaseCount('entities', 0);
+    }
+
+    public function test_entity_can_be_updated(): void
+    {
+        $state = State::factory()->create();
+        $entity = Entity::factory()->for($state)->create([
+            'entity_code' => 'ENT-100',
+            'name' => 'Old Name',
+        ]);
+
+        $this->actingAs(User::factory()->create())
+            ->put("/master-data/entities/{$entity->id}", [
+                'entityCode' => 'ENT-100',
+                'name' => 'Updated Name',
+                'stateId' => $state->id,
+                'status' => 'Inactive',
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame('Updated Name', $entity->refresh()->name);
+        $this->assertSame('Inactive', $entity->status->value);
+    }
+
+    public function test_entity_update_rejects_an_existing_entity_code(): void
+    {
+        $state = State::factory()->create();
+        $entity = Entity::factory()->for($state)->create([
+            'entity_code' => 'ENT-100',
+            'name' => 'North Gas',
+        ]);
+        Entity::factory()->for($state)->create(['entity_code' => 'ENT-200']);
+
+        $this->actingAs(User::factory()->create())
+            ->put("/master-data/entities/{$entity->id}", [
+                'entityCode' => 'ENT-200',
+                'name' => 'Changed Name',
+                'stateId' => $state->id,
+                'status' => 'Active',
+            ])
+            ->assertSessionHasErrors('entityCode');
+
+        $this->assertSame('ENT-100', $entity->refresh()->entity_code);
+        $this->assertSame('North Gas', $entity->name);
+    }
 
     public function test_ga_can_be_created_with_districts_of_its_state(): void
     {

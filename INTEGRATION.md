@@ -62,6 +62,8 @@ Sample users, plans and DPRs are only seeded outside production.
 | `POST`/`PUT /master-data/geographical-areas[/{id}]` | – | | `name, stateId, districtIds[]`; `status` is update-only |
 | `GET /master-data/business-units` | `master-data/BusinessUnits` | `BUManagerContent.jsx` + `MasterDataContent.jsx` | `managers`, `filters`, `options.statuses` |
 | `POST`/`PUT /master-data/business-units[/{id}]` | – | | `name`; `status` is update-only |
+| `GET /master-data/entities` | `master-data/Entities` | `Entities.jsx` | `managers`, `filters.search`, `options.{statuses,states}` |
+| `POST`/`PUT /master-data/entities[/{id}]` | – | | `entityCode, name, stateId`, optional tax/registration fields; `status` is update-only |
 
 Sidebar navigation already uses these URLs (`components/Sidebar.jsx`).
 
