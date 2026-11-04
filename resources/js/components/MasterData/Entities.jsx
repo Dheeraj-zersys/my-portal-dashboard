@@ -352,7 +352,7 @@ const EntityManager = ({ managers, filters, options, showSearch = false }) => {
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <label className="block space-y-1 text-xs font-medium text-gray-700">
+                            <label className="block space-y-1 text-xs font-medium mb-2 text-gray-700">
                                 <span>
                                     Entity Code
                                     <span className="text-red-500">*</span>
@@ -492,21 +492,22 @@ const EntityManager = ({ managers, filters, options, showSearch = false }) => {
                                 />
                             </label>
 
-                            <label className="block space-y-1 text-xs font-medium text-gray-700 sm:col-span-2">
-                                <span>TAN Number</span>
-                                <input
-                                    value={form.tanNumber}
-                                    onChange={(e) =>
-                                        setForm({
-                                            ...form,
-                                            tanNumber: e.target.value,
-                                        })
-                                    }
-                                    placeholder="Enter TAN Number"
-                                    className="w-full rounded border border-gray-200 bg-[#f8f9fc] px-3 py-2 text-sm text-gray-800 outline-none focus:border-emerald-600 sm:w-1/2"
-                                />
-                            </label>
-
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <label className="block space-y-1 text-xs font-medium text-gray-700 sm:col-span-2">
+                                    <span>TAN Number</span>
+                                    <input
+                                        value={form.tanNumber}
+                                        onChange={(e) =>
+                                            setForm({
+                                                ...form,
+                                                tanNumber: e.target.value,
+                                            })
+                                        }
+                                        placeholder="Enter TAN Number"
+                                        className="w-full rounded border border-gray-200 bg-[#f8f9fc] px-3 py-2 text-sm text-gray-800 outline-none focus:border-emerald-600 "
+                                    />
+                                </label>
+                            </div>
                             <label className="block space-y-1 text-xs font-medium text-gray-700 sm:col-span-2">
                                 <span>Registered Address</span>
                                 <textarea
