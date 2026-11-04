@@ -1,9 +1,15 @@
 import AppLayout from '@/layouts/AppLayout';
-import PagePlaceholder from '@/components/PagePlaceholder';
+import DailyProgressReport from '@/components/DailyProgress';
 
-// TODO(frontend): replace with the UI from components/DailyProgress.jsx (add/edit wizard)
-export default function DailyProgressReportForm() {
-    return <PagePlaceholder source="components/DailyProgress.jsx (add/edit wizard)" />;
+export default function DailyProgressReportForm({ report, steps, options }) {
+    return (
+        <DailyProgressReport
+            screen="form"
+            report={report}
+            steps={steps}
+            options={options}
+        />
+    );
 }
 
 DailyProgressReportForm.layout = AppLayout;

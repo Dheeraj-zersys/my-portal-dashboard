@@ -39,6 +39,24 @@ class DailyProgressReportTest extends TestCase
             ->assertSessionHasErrors('cngSales');
     }
 
+    public function test_existing_report_can_be_updated(): void
+    {
+        $report = DailyProgressReport::factory()->create([
+            'report_date' => '2026-01-01',
+            'domestic_reg' => 5,
+        ]);
+
+        $this->actingAs(User::factory()->create())
+            ->put("/daily-progress-reports/{$report->id}", [
+                'date' => '2026-02-01',
+                'domesticReg' => 12,
+            ])
+            ->assertRedirect("/daily-progress-reports/{$report->id}");
+
+        $this->assertSame('2026-02-01', $report->refresh()->report_date->toDateString());
+        $this->assertSame('12.00', $report->domestic_reg);
+    }
+
     public function test_show_includes_cumulative_totals(): void
     {
         DailyProgressReport::factory()->create(['report_date' => '2024-06-01', 'domestic_reg' => 1]);

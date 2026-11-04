@@ -1,10 +1,8 @@
 import AppLayout from "@/layouts/AppLayout";
 import UsersContent from "@/components/UsersContent";
 
-// UI renders mock data. TODO(frontend): use the props below instead.
-// Props: users, filters, options
-export default function UsersIndex() {
-  return <UsersContent />;
+export default function UsersIndex({ users, filters, options }) {
+  return <UsersContent users={users} filters={filters} options={options} />;
 }
 
 UsersIndex.layout = AppLayout;

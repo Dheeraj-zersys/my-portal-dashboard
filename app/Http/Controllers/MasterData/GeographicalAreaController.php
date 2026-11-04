@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\MasterData;
 
+use App\Enums\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GeographicalAreaRequest;
 use App\Http\Resources\GeographicalAreaResource;
@@ -39,7 +40,7 @@ class GeographicalAreaController extends Controller
             'options' => [
                 'statuses' => Lookups::statuses(),
                 'states' => Lookups::states(),
-                'geographicalAreas' => Lookups::geographicalAreas(),
+                'geographicalAreas' => Lookups::geographicalAreas(activeOnly: false),
             ],
         ]);
     }
@@ -50,7 +51,7 @@ class GeographicalAreaController extends Controller
             $area = GeographicalArea::create([
                 'name' => $request->validated('name'),
                 'state_id' => $request->validated('stateId'),
-                'status' => $request->validated('status'),
+                'status' => Status::Active->value,
             ]);
             $area->districts()->sync($request->validated('districtIds'));
         });

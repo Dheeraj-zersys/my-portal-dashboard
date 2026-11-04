@@ -1,10 +1,8 @@
 import AppLayout from "@/layouts/AppLayout";
 import GAManagerContent from "@/components/MasterData/GAManagerContent";
 
-// UI renders mock data. TODO(frontend): use the props below instead.
-// Props: managers, filters, options
-export default function GeographicalAreas() {
-  return <GAManagerContent />;
+export default function GeographicalAreas({ managers, filters, options }) {
+  return <GAManagerContent managers={managers} filters={filters} options={options} />;
 }
 
 GeographicalAreas.layout = AppLayout;

@@ -1,10 +1,8 @@
 import AppLayout from "@/layouts/AppLayout";
 import BUManagerContent from "@/components/MasterData/BUManagerContent";
 
-// UI renders mock data. TODO(frontend): use the props below instead.
-// Props: managers, filters, options
-export default function BusinessUnits() {
-  return <BUManagerContent />;
+export default function BusinessUnits({ managers, filters, options }) {
+  return <BUManagerContent managers={managers} filters={filters} options={options} />;
 }
 
 BusinessUnits.layout = AppLayout;

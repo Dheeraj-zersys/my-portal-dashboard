@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MasterData\BusinessUnitController;
 use App\Http\Controllers\MasterData\GeographicalAreaController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\EnsureActiveUser;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -21,7 +22,7 @@ Route::middleware('guest')->group(function () {
     Route::post('reset-password', [NewPasswordController::class, 'store'])->name('password.store');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', EnsureActiveUser::class])->group(function () {
     Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
 
     Route::redirect('/', '/dashboard');

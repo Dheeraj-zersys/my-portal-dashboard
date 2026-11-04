@@ -52,6 +52,36 @@ class AuthTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_deactivated_user_session_is_invalidated_on_the_next_request(): void
+    {
+        $user = User::factory()->create();
+        $user->update(['status' => 'Inactive']);
+
+        $this->actingAs($user)
+            ->withSession(['session-marker' => 'present'])
+            ->get('/dashboard')
+            ->assertRedirect('/login')
+            ->assertSessionMissing('session-marker');
+
+        $this->assertGuest();
+    }
+
+    public function test_deactivated_user_with_a_remembered_session_is_blocked(): void
+    {
+        $user = User::factory()->create();
+
+        $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'password',
+            'rememberMe' => true,
+        ])->assertRedirect('/dashboard');
+
+        $user->update(['status' => 'Inactive']);
+
+        $this->get('/dashboard')->assertRedirect('/login');
+        $this->assertGuest();
+    }
+
     public function test_password_can_be_reset_with_emailed_token(): void
     {
         Notification::fake();

@@ -1,11 +1,6 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { selectDashboardStats } from "../store/dashboardSlice";
 import { Users, ListChecks, FileText, Globe } from "lucide-react";
 
-const DashboardContent = ({ activeTab = "Dashboard" }) => {
-  const stats = useSelector(selectDashboardStats);
-
+const DashboardContent = ({ stats, activeTab = "Dashboard" }) => {
   if (activeTab !== "Dashboard") {
     return <div className="flex-1 bg-gray-50" />;
   }
@@ -14,25 +9,25 @@ const DashboardContent = ({ activeTab = "Dashboard" }) => {
     {
       id: "users",
       title: "Users",
-      value: stats?.users ?? 15,
+      value: stats?.users ?? 0,
       icon: Users,
     },
     {
       id: "businessPlan",
       title: "Business Plan",
-      value: `${stats?.businessPlan?.current ?? 15}/${stats?.businessPlan?.total ?? 50}`,
+      value: `${stats?.businessPlan?.current ?? 0}/${stats?.businessPlan?.total ?? 0}`,
       icon: ListChecks,
     },
     {
       id: "dpr",
       title: "Daily Progress Report",
-      value: `${stats?.dailyProgressReport?.current ?? 19}/${stats?.dailyProgressReport?.total ?? 50}`,
+      value: `${stats?.dailyProgressReport?.current ?? 0}/${stats?.dailyProgressReport?.total ?? 0}`,
       icon: FileText,
     },
     {
       id: "geoArea",
       title: "Geographical Area",
-      value: stats?.geographicalArea ?? 15,
+      value: stats?.geographicalArea ?? 0,
       icon: Globe,
     },
   ];

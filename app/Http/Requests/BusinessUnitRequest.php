@@ -17,7 +17,9 @@ class BusinessUnitRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255', Rule::unique('business_units', 'name')->ignore($this->route('business_unit'))],
-            'status' => ['required', Rule::enum(Status::class)],
+            'status' => $this->route('business_unit')
+                ? ['required', Rule::enum(Status::class)]
+                : ['prohibited'],
         ];
     }
 }

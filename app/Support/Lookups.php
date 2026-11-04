@@ -24,9 +24,10 @@ class Lookups
         return array_map(fn (Status $status) => ['value' => $status->value, 'label' => $status->value], Status::cases());
     }
 
-    public static function businessUnits(): array
+    public static function businessUnits(bool $activeOnly = true): array
     {
-        return BusinessUnit::where('status', Status::Active)
+        return BusinessUnit::query()
+            ->when($activeOnly, fn ($query) => $query->where('status', Status::Active))
             ->orderBy('name')
             ->get(['id', 'name'])
             ->map(fn (BusinessUnit $unit) => ['value' => $unit->id, 'label' => $unit->name])
@@ -34,9 +35,10 @@ class Lookups
     }
 
     /** Active GAs, each with the districts it covers (for GA -> district cascades). */
-    public static function geographicalAreas(): array
+    public static function geographicalAreas(bool $activeOnly = true): array
     {
-        return GeographicalArea::where('status', Status::Active)
+        return GeographicalArea::query()
+            ->when($activeOnly, fn ($query) => $query->where('status', Status::Active))
             ->with('districts:id,name')
             ->orderBy('name')
             ->get(['id', 'name'])

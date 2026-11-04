@@ -28,7 +28,9 @@ class GeographicalAreaRequest extends FormRequest
                 'distinct',
                 Rule::exists('districts', 'id')->where('state_id', $this->integer('stateId')),
             ],
-            'status' => ['required', Rule::enum(Status::class)],
+            'status' => $this->route('geographical_area')
+                ? ['required', Rule::enum(Status::class)]
+                : ['prohibited'],
         ];
     }
 

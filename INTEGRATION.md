@@ -1,9 +1,8 @@
 # Backend → Frontend Integration Guide
 
-The backend is complete and the existing UI already runs inside it: authentication (login, logout,
-forgot and reset password), the layout and sidebar navigation are wired up. Each screen still renders its **mock data** (seed arrays, Redux,
-localStorage). Integration means replacing that mock data with the Inertia props and form posts
-described here.
+All application screens now use backend data through Inertia. Lists, dropdowns, dashboard stats,
+and report previews are loaded from Laravel; create and edit forms write to the database. No
+application data is stored in browser localStorage.
 
 Stack: Laravel 13 · Inertia v3 (`inertiajs/inertia-laravel` + `@inertiajs/react`) · React 19 · MySQL · Tailwind 4.
 
@@ -15,7 +14,7 @@ cp .env.example .env && php artisan key:generate
 # create the MySQL database `my_portal` and set DB_USERNAME / DB_PASSWORD in .env
 php artisan migrate --seed
 composer run dev          # or: php artisan serve  +  npm run dev
-php artisan test          # 23 feature tests, run on in-memory SQLite
+php artisan test          # feature tests, run on in-memory SQLite
 ```
 
 Seeded login: `admin@example.com` / `password` (and sonal/tina/rahul/amal/priya@example.com, same password).
@@ -49,20 +48,20 @@ Sample users, plans and DPRs are only seeded outside production.
 | `POST /forgot-password` (`password.email`) | – | | body: `email` |
 | `GET /reset-password/{token}` (`password.reset`) | `auth/ResetPassword` | wired (`pages/auth/ResetPassword.jsx`) | `token`, `email` |
 | `POST /reset-password` (`password.store`) | – | | body: `token`, `email`, `password`, `password_confirmation` |
-| `GET /dashboard` (`dashboard`) | `Dashboard` | `DashboardContent.jsx` | `stats` (same shape as `dashboardSlice`) |
+| `GET /dashboard` (`dashboard`) | `Dashboard` | `DashboardContent.jsx` | Database-backed `stats` |
 | `GET /users` | `users/Index` | `UsersContent.jsx` | `users`, `filters`, `options.{roles,statuses,businessUnits,geographicalAreas}` |
-| `POST /users`, `PUT /users/{id}` | – | | `name, email, phone, role, status, businessUnitId, geographicalAreaId?, entity?, password, confirmPassword` (password optional on update) |
+| `POST /users`, `PUT /users/{id}` | – | | `name, email, phone, role, businessUnitId, geographicalAreaId?, entity?, password, confirmPassword`; `status` is update-only |
 | `GET /business-plans` | `business-plans/Index` | `BusinessPlanContent.jsx` | `plans`, `filters`, `options.geographicalAreas` |
 | `POST /business-plans`, `PUT /business-plans/{id}` | – | | `entityName, geographicalAreaId, districtId, date, transport, industrialMarket, commercial, domestic` |
-| `GET /daily-progress-reports` | `daily-progress-reports/Index` | `DailyProgress.jsx` (list, wizard and preview are all here today) | `reports`, `filters` |
-| `GET /daily-progress-reports/create` | `daily-progress-reports/Form` | placeholder; wizard currently inside `DailyProgress.jsx` | `report: null`, `steps`, `options.geographicalAreas` |
-| `GET /daily-progress-reports/{id}/edit` | `daily-progress-reports/Form` | placeholder; wizard currently inside `DailyProgress.jsx` | `report`, `steps`, `options.geographicalAreas` |
+| `GET /daily-progress-reports` | `daily-progress-reports/Index` | `DailyProgress.jsx` | `reports`, `filters` |
+| `GET /daily-progress-reports/create` | `daily-progress-reports/Form` | `DailyProgress.jsx` wizard | `report: null`, `steps`, `options.geographicalAreas` |
+| `GET /daily-progress-reports/{id}/edit` | `daily-progress-reports/Form` | `DailyProgress.jsx` wizard | `report`, `steps`, `options.geographicalAreas` |
 | `POST /daily-progress-reports`, `PUT …/{id}` | – | | `date`, `geographicalAreaId?`, plus every key in `formData` from `dpr.js` (all nullable, ≥ 0) |
-| `GET /daily-progress-reports/{id}` | `daily-progress-reports/Show` | placeholder; preview currently inside `DailyProgress.jsx` | `report`, `steps`, `cumulative` (below) |
+| `GET /daily-progress-reports/{id}` | `daily-progress-reports/Show` | `DailyProgress.jsx` preview | `report`, `steps`, `cumulative` (below) |
 | `GET /master-data/geographical-areas` | `master-data/GeographicalAreas` | `GAManagerContent.jsx` + `MasterDataContent.jsx` | `managers`, `filters`, `options.{statuses,states,geographicalAreas}`. Filters: `search, gaId, stateId, districtId` |
-| `POST`/`PUT /master-data/geographical-areas[/{id}]` | – | | `name, stateId, districtIds[], status` |
+| `POST`/`PUT /master-data/geographical-areas[/{id}]` | – | | `name, stateId, districtIds[]`; `status` is update-only |
 | `GET /master-data/business-units` | `master-data/BusinessUnits` | `BUManagerContent.jsx` + `MasterDataContent.jsx` | `managers`, `filters`, `options.statuses` |
-| `POST`/`PUT /master-data/business-units[/{id}]` | – | | `name, status` |
+| `POST`/`PUT /master-data/business-units[/{id}]` | – | | `name`; `status` is update-only |
 
 Sidebar navigation already uses these URLs (`components/Sidebar.jsx`).
 
@@ -88,10 +87,11 @@ cumulative = {
 import { router, useForm, usePage } from '@inertiajs/react';
 
 export default function UsersIndex({ users, filters, options }) {
-  const form = useForm({ name: '', email: '', phone: '', role: 'User', status: 'Active',
+  const form = useForm({ name: '', email: '', phone: '', role: 'User',
     businessUnitId: null, geographicalAreaId: null, entity: '', password: '', confirmPassword: '' });
 
   const search = (q) => router.get('/users', { search: q }, { preserveState: true, replace: true });
+  // Add `status` to the payload when editing; it is not set on create.
   const save = (editingId) => editingId
     ? form.put(`/users/${editingId}`, { onSuccess: () => form.reset() })
     : form.post('/users', { onSuccess: () => form.reset() });
@@ -109,13 +109,14 @@ export default function UsersIndex({ users, filters, options }) {
 - Schema: `database/migrations`, seed data: `database/seeders`
 - Tests (also usable as API examples): `tests/Feature`
 
-## Behaviour changes vs. the current mock UI
+## Behaviour notes
 
 - **Password reset is token-based.** The old mock reset a password with just an email address. Now
   "Forgot Password" emails a link to `/reset-password/{token}` (valid 60 minutes), which opens the set-password
   screen. Locally `MAIL_MAILER=log`, so the email (and link) is written to `storage/logs/laravel.log`;
   set the `MAIL_*` values in `.env` to send real email.
 - **Inactive users cannot log in.** Login is throttled to 5 attempts per minute.
+- **Deactivated accounts lose existing sessions and remembered sessions** on the next authenticated request. Administrators cannot deactivate their own accounts.
 - **Business plan districts must belong to the chosen GA**, and GA districts must belong to the chosen state.
 - **No delete endpoints**, matching the UI. Records are deactivated through `status`.
 

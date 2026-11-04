@@ -52,6 +52,34 @@ class BusinessPlanTest extends TestCase
         ]);
     }
 
+    public function test_existing_plan_can_be_updated(): void
+    {
+        $area = GeographicalArea::factory()->create();
+        $district = District::factory()->create(['state_id' => $area->state_id]);
+        $area->districts()->attach($district);
+        $plan = BusinessPlan::factory()->create([
+            'geographical_area_id' => $area->id,
+            'district_id' => $district->id,
+        ]);
+
+        $this->actingAs(User::factory()->create())
+            ->put("/business-plans/{$plan->id}", [
+                'entityName' => 'Updated Entity',
+                'geographicalAreaId' => $plan->geographical_area_id,
+                'districtId' => $plan->district_id,
+                'date' => '2026-02-12',
+                'transport' => 100,
+                'industrialMarket' => 200,
+                'commercial' => 300,
+                'domestic' => 400,
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame('Updated Entity', $plan->refresh()->entity_name);
+        $this->assertSame('2026-02-12', $plan->plan_date->toDateString());
+        $this->assertSame('100.00', $plan->transport);
+    }
+
     public function test_district_outside_the_ga_is_rejected(): void
     {
         $area = GeographicalArea::factory()->create();

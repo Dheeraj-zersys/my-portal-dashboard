@@ -20,17 +20,30 @@ class MasterDataTest extends TestCase
         $state = State::factory()->create(['name' => 'Karnataka']);
         $districts = District::factory()->count(2)->create(['state_id' => $state->id]);
 
-        $this->actingAs(User::factory()->create())->post('/master-data/geographical-areas', [
+        $user = User::factory()->create();
+        $this->actingAs($user)->post('/master-data/geographical-areas', [
             'name' => 'RMD',
             'stateId' => $state->id,
             'districtIds' => $districts->pluck('id')->all(),
-            'status' => 'Active',
         ])->assertSessionHasNoErrors();
 
+        $area = GeographicalArea::where('name', 'RMD')->firstOrFail();
         $this->assertEqualsCanonicalizing(
             $districts->pluck('id')->all(),
-            GeographicalArea::where('name', 'RMD')->firstOrFail()->districts->pluck('id')->all(),
+            $area->districts->pluck('id')->all(),
         );
+        $this->assertSame('Active', $area->status->value);
+
+        $this->actingAs($user)
+            ->put("/master-data/geographical-areas/{$area->id}", [
+                'name' => 'RMD',
+                'stateId' => $state->id,
+                'districtIds' => $districts->pluck('id')->all(),
+                'status' => 'Inactive',
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame('Inactive', $area->refresh()->status->value);
     }
 
     public function test_ga_rejects_district_from_another_state(): void
@@ -42,7 +55,6 @@ class MasterDataTest extends TestCase
             'name' => 'RMD',
             'stateId' => $state->id,
             'districtIds' => [$foreignDistrict->id],
-            'status' => 'Active',
         ])->assertSessionHasErrors('districtIds.0');
     }
 
@@ -70,7 +82,7 @@ class MasterDataTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->post('/master-data/business-units', ['name' => 'BU 1', 'status' => 'Active'])
+            ->post('/master-data/business-units', ['name' => 'BU 1'])
             ->assertSessionHasErrors('name');
 
         $unit = BusinessUnit::firstOrFail();
@@ -78,5 +90,14 @@ class MasterDataTest extends TestCase
             ->put("/master-data/business-units/{$unit->id}", ['name' => 'BU 1', 'status' => 'Inactive'])
             ->assertSessionHasNoErrors();
         $this->assertSame('Inactive', $unit->refresh()->status->value);
+    }
+
+    public function test_new_business_unit_defaults_to_active(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->post('/master-data/business-units', ['name' => 'New Unit'])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame('Active', BusinessUnit::where('name', 'New Unit')->firstOrFail()->status->value);
     }
 }

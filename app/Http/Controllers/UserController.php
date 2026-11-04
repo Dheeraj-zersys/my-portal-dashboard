@@ -33,8 +33,8 @@ class UserController extends Controller
             'options' => [
                 'roles' => Lookups::roles(),
                 'statuses' => Lookups::statuses(),
-                'businessUnits' => Lookups::businessUnits(),
-                'geographicalAreas' => Lookups::geographicalAreas(),
+                'businessUnits' => Lookups::businessUnits(activeOnly: false),
+                'geographicalAreas' => Lookups::geographicalAreas(activeOnly: false),
             ],
         ]);
     }

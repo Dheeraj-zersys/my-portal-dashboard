@@ -1,64 +1,115 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { PenBoxIcon, Eye, ChevronLeft, Search, Calendar } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { router, usePage } from "@inertiajs/react";
 import {
     setView,
     startAddDpr,
     startEditDpr,
     setCurrentStep,
     updateFormField,
-    saveDpr,
 } from "../app/dpr";
 
-export default function DprModule() {
+const toDisplayDate = (date) => {
+    if (!date) return "";
+    const [year, month, day] = date.split("-");
+    return `${day}/${month}/${year}`;
+};
+
+const toStoredDate = (date) => {
+    if (!date) return "";
+    const [day, month, year] = date.split("/");
+    return `${year}-${month}-${day}`;
+};
+
+export default function DprModule({
+    screen = "index",
+    reports,
+    filters = {},
+    report,
+    cumulative,
+}) {
     const dispatch = useDispatch();
-    const { view, currentStep, editMode, reports, formData } = useSelector(
+    const { view, currentStep, editMode, formData } = useSelector(
         (state) => state.dpr,
     );
+    const { errors } = usePage().props;
 
-    const [searchTerm, setSearchTerm] = useState("");
-    const [pageSize, setPageSize] = useState(5);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [selectedReportId, setSelectedReportId] = useState(null);
+    const [searchTerm, setSearchTerm] = useState(filters.search ?? "");
+    const [isSaving, setIsSaving] = useState(false);
+    const page = reports?.meta?.current_page ?? 1;
+    const pageSize = reports?.meta?.per_page ?? 5;
+    const totalPages = reports?.meta?.last_page ?? 1;
+    const totalReports = reports?.meta?.total ?? 0;
+    const firstItem = totalReports ? (page - 1) * pageSize + 1 : 0;
+    const lastItem = Math.min(page * pageSize, totalReports);
+    const activeReport = report ?? formData;
 
-    const filteredReports = reports.filter((rep) => {
-        const term = searchTerm.toLowerCase();
-        return (
-            (rep.date && rep.date.toLowerCase().includes(term)) ||
-            (rep.domesticReg && rep.domesticReg.toLowerCase().includes(term)) ||
-            (rep.domesticLmc && rep.domesticLmc.toLowerCase().includes(term)) ||
-            (rep.domesticCom && rep.domesticCom.toLowerCase().includes(term)) ||
-            (rep.commercialReg &&
-                rep.commercialReg.toLowerCase().includes(term)) ||
-            (rep.commercialCom &&
-                rep.commercialCom.toLowerCase().includes(term)) ||
-            (rep.industrialReg &&
-                rep.industrialReg.toLowerCase().includes(term)) ||
-            (rep.industrialCom &&
-                rep.industrialCom.toLowerCase().includes(term))
+    useEffect(() => {
+        if (screen === "form") {
+            dispatch(
+                report
+                    ? startEditDpr({
+                          ...report,
+                          date: toDisplayDate(report.date),
+                      })
+                    : startAddDpr(),
+            );
+        } else if (screen === "show") {
+            dispatch(setView("previewPart1"));
+        } else {
+            dispatch(setView("list"));
+        }
+    }, [dispatch, report, screen]);
+
+    const updateSearch = (search) => {
+        setSearchTerm(search);
+        router.get(
+            "/daily-progress-reports",
+            { search, page: 1, perPage: pageSize },
+            { preserveState: true, preserveScroll: true, replace: true },
         );
-    });
+    };
 
-    const totalPages = Math.ceil(filteredReports.length / pageSize) || 1;
-    const startIndex = (currentPage - 1) * pageSize;
-    const displayedReports = filteredReports.slice(
-        startIndex,
-        startIndex + pageSize,
-    );
+    const goToPage = (nextPage) => {
+        router.get(
+            "/daily-progress-reports",
+            { ...filters, page: nextPage, perPage: pageSize },
+            { preserveState: true, preserveScroll: true },
+        );
+    };
 
-    // Determine data source for preview: active formData during wizard vs specific saved report from list
-    const activeReport = selectedReportId
-        ? reports.find((r) => r.id === selectedReportId) || formData
-        : formData;
+    const saveReport = () => {
+        if (isSaving) return;
+
+        setIsSaving(true);
+        const payload = {
+            ...formData,
+            date: toStoredDate(formData.date),
+        };
+        const url = editMode
+            ? `/daily-progress-reports/${report.id}`
+            : "/daily-progress-reports";
+        const options = {
+            preserveScroll: true,
+            onFinish: () => setIsSaving(false),
+        };
+
+        if (editMode) {
+            router.put(url, payload, options);
+        } else {
+            router.post(url, payload, options);
+        }
+    };
 
     const inputClassName =
         "w-full bg-gray-50/50 border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-emerald-600 focus:border-emerald-600 transition-colors";
 
     return (
         <div className="min-h-0 bg-gray-50 p-6">
-            {view === "list" && (
+            {screen === "index" && view === "list" && (
                 <div>
                     <div className="flex justify-between items-center mr-8 mb-6">
                         <h1 className="text-3xl font-semibold text-gray-800">
@@ -75,18 +126,18 @@ export default function DprModule() {
                                     type="text"
                                     placeholder="Search"
                                     value={searchTerm}
-                                    onChange={(e) => {
-                                        setSearchTerm(e.target.value);
-                                        setCurrentPage(1);
-                                    }}
+                                    onChange={(e) =>
+                                        updateSearch(e.target.value)
+                                    }
                                     className="border border-gray-300 rounded-md pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 w-64 bg-white"
                                 />
                             </div>
                             <button
-                                onClick={() => {
-                                    setSelectedReportId(null);
-                                    dispatch(startAddDpr());
-                                }}
+                                onClick={() =>
+                                    router.visit(
+                                        "/daily-progress-reports/create",
+                                    )
+                                }
                                 className="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-md font-medium text-sm flex items-center gap-2 transition-colors"
                             >
                                 + Add DPR
@@ -158,16 +209,16 @@ export default function DprModule() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {displayedReports.map((rep, idx) => (
+                                    {reports.data.map((rep, idx) => (
                                         <tr
                                             key={rep.id}
                                             className="border-b border-gray-300 hover:bg-gray-50 last:border-b-0"
                                         >
                                             <td className="p-3 border-r border-gray-300 text-center">
-                                                {startIndex + idx + 1}
+                                                {(page - 1) * pageSize + idx + 1}
                                             </td>
                                             <td className="p-3 border-r border-gray-300">
-                                                {rep.date}
+                                                {toDisplayDate(rep.date)}
                                             </td>
                                             <td className="p-3 border-r border-gray-300">
                                                 {rep.domesticReg || "0"}
@@ -192,32 +243,22 @@ export default function DprModule() {
                                             </td>
                                             <td className="p-3 flex items-center gap-3">
                                                 <button
-                                                    onClick={() => {
-                                                        setSelectedReportId(
-                                                            rep.id,
-                                                        );
-                                                        dispatch(
-                                                            setView(
-                                                                "previewPart1",
-                                                            ),
-                                                        );
-                                                    }}
+                                                    onClick={() =>
+                                                        router.visit(
+                                                            `/daily-progress-reports/${rep.id}`,
+                                                        )
+                                                    }
                                                     className="text-emerald-600 hover:text-emerald-800 bg-emerald-50 p-1.5 rounded"
                                                     title="Preview"
                                                 >
                                                     <Eye className="w-4 h-4" />
                                                 </button>
                                                 <button
-                                                    onClick={() => {
-                                                        setSelectedReportId(
-                                                            rep.id,
-                                                        );
-                                                        dispatch(
-                                                            startEditDpr(
-                                                                rep.id,
-                                                            ),
-                                                        );
-                                                    }}
+                                                    onClick={() =>
+                                                        router.visit(
+                                                            `/daily-progress-reports/${rep.id}/edit`,
+                                                        )
+                                                    }
                                                     className="text-emerald-600 hover:text-emerald-800 bg-emerald-50 p-1.5 rounded"
                                                     title="Edit"
                                                 >
@@ -233,41 +274,26 @@ export default function DprModule() {
                         <div className="flex justify-between items-center text-xs text-gray-500 p-4 border-t border-gray-100 bg-white">
                             <div>
                                 Showing data{" "}
-                                {filteredReports.length > 0
-                                    ? startIndex + 1
-                                    : 0}{" "}
-                                to{" "}
-                                {Math.min(
-                                    startIndex + pageSize,
-                                    filteredReports.length,
-                                )}{" "}
-                                of {reports.length} entries
+                                {firstItem} to {lastItem} of {totalReports} entries
                             </div>
                             <div className="flex items-center gap-1">
                                 <button
                                     onClick={() =>
-                                        setCurrentPage((prev) =>
-                                            Math.max(prev - 1, 1),
-                                        )
+                                        goToPage(Math.max(page - 1, 1))
                                     }
-                                    disabled={currentPage === 1}
+                                    disabled={page === 1}
                                     className="px-2 py-1 rounded text-gray-600 hover:text-gray-800 disabled:opacity-50"
                                 >
                                     &lt;
                                 </button>
                                 <span className="px-3 py-1 bg-emerald-700 text-white rounded text-xs font-medium">
-                                    {currentPage}
+                                    {page}
                                 </span>
                                 <button
                                     onClick={() =>
-                                        setCurrentPage((prev) =>
-                                            Math.min(prev + 1, totalPages),
-                                        )
+                                        goToPage(Math.min(page + 1, totalPages))
                                     }
-                                    disabled={
-                                        currentPage === totalPages ||
-                                        totalPages === 0
-                                    }
+                                    disabled={page === totalPages}
                                     className="px-2 py-1 rounded text-gray-600 hover:text-gray-800 disabled:opacity-50"
                                 >
                                     &gt;
@@ -278,7 +304,7 @@ export default function DprModule() {
                 </div>
             )}
 
-            {view === "wizard" && (
+            {screen === "form" && view === "wizard" && (
                 <div className="max-w-4xl mx-auto">
                     <div className="flex justify-between items-center mb-6 mr-8">
                         <h2 className="text-3xl font-semibold text-gray-800">
@@ -286,13 +312,24 @@ export default function DprModule() {
                         </h2>
                         <button
                             type="button"
-                            onClick={() => dispatch(setView("list"))}
+                            onClick={() =>
+                                router.visit("/daily-progress-reports")
+                            }
                             className="flex items-center gap-1.5 rounded-lg border border-gray-600 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition"
                         >
                             <ChevronLeft size={16} aria-hidden="true" />
                             <span>Back</span>
                         </button>
                     </div>
+
+                    {Object.keys(errors).length > 0 && (
+                        <div
+                            role="alert"
+                            className="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+                        >
+                            {Object.values(errors).join(" ")}
+                        </div>
+                    )}
 
                     <div className="bg-white rounded-lg border border-gray-200 p-6">
                         <div className="mb-6">
@@ -1052,7 +1089,6 @@ export default function DprModule() {
                             ) : (
                                 <button
                                     onClick={() => {
-                                        setSelectedReportId(null);
                                         dispatch(setView("previewPart1"));
                                     }}
                                     className="bg-emerald-700 hover:bg-emerald-800 text-white px-5 py-2 rounded text-sm font-medium transition-colors ml-auto"
@@ -1066,7 +1102,8 @@ export default function DprModule() {
             )}
 
             {/* PREVIEW PART 1 */}
-            {view === "previewPart1" && (
+            {view === "previewPart1" &&
+                (screen === "form" || screen === "show") && (
                 <div className="bg-white rounded-lg border border-gray-200 p-6 max-w-6xl mx-auto">
                     <div className="flex justify-between items-center mb-4 border-b pb-3">
                         <h2 className="text-lg font-bold text-gray-800">
@@ -1074,11 +1111,11 @@ export default function DprModule() {
                         </h2>
                         <button
                             onClick={() =>
-                                dispatch(
-                                    setView(
-                                        selectedReportId ? "list" : "wizard",
-                                    ),
-                                )
+                                screen === "show"
+                                    ? router.visit(
+                                          "/daily-progress-reports",
+                                      )
+                                    : dispatch(setView("wizard"))
                             }
                             className="flex items-center gap-1.5 rounded-lg border border-gray-600 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition"
                         >
@@ -1087,7 +1124,7 @@ export default function DprModule() {
                         </button>
                     </div>
                     <div className="text-center font-semibold text-xs text-gray-700 mb-4">
-                        Date: {activeReport.date}
+                        Date: {toDisplayDate(activeReport.date)}
                     </div>
                     <div className="overflow-x-auto border border-gray-200 rounded">
                         <table className="w-full text-xs text-left border-collapse border border-gray-300">
@@ -1663,6 +1700,58 @@ export default function DprModule() {
                             </tbody>
                         </table>
                     </div>
+                    {cumulative && (
+                        <div className="mt-6">
+                            <h3 className="mb-3 text-sm font-semibold text-gray-800">
+                                Cumulative Totals
+                            </h3>
+                            <div className="overflow-x-auto border border-gray-200 rounded">
+                                <table className="w-full text-xs text-left border-collapse">
+                                    <thead className="bg-gray-100">
+                                        <tr>
+                                            <th className="p-2 border-r border-gray-300">
+                                                Metric
+                                            </th>
+                                            {Object.entries(
+                                                cumulative.periods,
+                                            ).map(([period, details]) => (
+                                                <th
+                                                    key={period}
+                                                    className="p-2 border-r border-gray-300"
+                                                >
+                                                    {details.label}
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {Object.entries(
+                                            cumulative.totals,
+                                        ).map(([metric, totals]) => (
+                                            <tr
+                                                key={metric}
+                                                className="border-t border-gray-200"
+                                            >
+                                                <td className="p-2 border-r border-gray-300 font-medium">
+                                                    {metric}
+                                                </td>
+                                                {Object.keys(
+                                                    cumulative.periods,
+                                                ).map((period) => (
+                                                    <td
+                                                        key={period}
+                                                        className="p-2 border-r border-gray-300"
+                                                    >
+                                                        {totals[period] ?? "-"}
+                                                    </td>
+                                                ))}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
                     <div className="flex justify-end mt-6">
                         <button
                             onClick={() => dispatch(setView("previewPart2"))}
@@ -1675,7 +1764,8 @@ export default function DprModule() {
             )}
 
             {/* PREVIEW PART 2 */}
-            {view === "previewPart2" && (
+            {view === "previewPart2" &&
+                (screen === "form" || screen === "show") && (
                 <div className="bg-white rounded-lg border border-gray-200 p-6 max-w-6xl mx-auto">
                     <div className="flex justify-between items-center mb-4 border-b pb-3">
                         <h2 className="text-lg font-bold text-gray-800">
@@ -1689,8 +1779,17 @@ export default function DprModule() {
                             Back
                         </button>
                     </div>
+                    {screen === "form" &&
+                        Object.keys(errors).length > 0 && (
+                            <div
+                                role="alert"
+                                className="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+                            >
+                                {Object.values(errors).join(" ")}
+                            </div>
+                        )}
                     <div className="text-center font-semibold text-xs text-gray-700 mb-4">
-                        Date: {activeReport.date}
+                        Date: {toDisplayDate(activeReport.date)}
                     </div>
                     <div className="overflow-x-auto border border-gray-200 rounded">
                         <table className="w-full text-xs text-left border-collapse border border-gray-300">
@@ -1921,16 +2020,20 @@ export default function DprModule() {
                     <div className="flex justify-end mt-6">
                         <button
                             onClick={() => {
-                                if (selectedReportId) {
-                                    setSelectedReportId(null);
-                                    dispatch(setView("list"));
+                                if (screen === "show") {
+                                    router.visit("/daily-progress-reports");
                                 } else {
-                                    dispatch(saveDpr());
+                                    saveReport();
                                 }
                             }}
+                            disabled={isSaving}
                             className="bg-emerald-700 hover:bg-emerald-800 text-white px-5 py-2 rounded text-sm font-medium"
                         >
-                            {selectedReportId ? "Back to List" : "Submit"}
+                            {screen === "show"
+                                ? "Back to List"
+                                : isSaving
+                                  ? "Saving..."
+                                  : "Submit"}
                         </button>
                     </div>
                 </div>
